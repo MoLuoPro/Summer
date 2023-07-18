@@ -1,4 +1,4 @@
-import 'package:summer/summer.dart';
+import 'package:summer_mvc/summer_mvc.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -13,6 +13,4 @@ void main() {
       expect(awesome.isAwesome, isTrue);
     });
   });
-
-  add();
 }

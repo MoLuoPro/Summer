@@ -1,9 +1,8 @@
 /// Support for doing something awesome.
 ///
 /// More dartdocs go here.
-library summer;
+library summer_orm;
 
-export 'src/summer_base.dart';
-export 'src/calc.dart';
+export 'src/summer_orm_base.dart';
 
 // TODO: Export any libraries intended for clients of this package.

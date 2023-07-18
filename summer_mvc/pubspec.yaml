@@ -1,5 +1,5 @@
-name: summer
-description: A server framework after Spring
+name: summer_mvc
+description: MVC framework for Summer
 version: 0.0.1
 repository: https://github.com/moluopro/summer
 

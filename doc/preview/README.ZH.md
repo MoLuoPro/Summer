@@ -1,2 +1,2 @@
 ## Summer
-A server framework after Spring  
+Powerful Server Framework behind Spring  

@@ -1,6 +1,6 @@
-name: summer
-description: Powerful Server Framework behind Spring
-version: 0.0.3
+name: sumcat
+description: Web Server for Summer
+version: 0.0.1
 repository: https://github.com/moluopro/summer
 
 environment:

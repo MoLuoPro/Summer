@@ -1,0 +1,14 @@
+name: summer
+description: A server framework after Spring  
+version: 0.0.1
+repository: https://github.com/MoLuoPro/summer
+
+environment:
+  sdk: ^3.0.6
+
+dependencies:
+  # path: ^1.8.0
+
+dev_dependencies:
+  lints: ^2.0.0
+  test: ^1.21.0

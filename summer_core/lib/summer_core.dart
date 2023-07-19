@@ -1,7 +1,7 @@
 /// Support for doing something awesome.
 ///
 /// More dartdocs go here.
-library;
+library summer_core;
 
 export 'src/summer_core_base.dart';
 

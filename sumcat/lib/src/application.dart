@@ -47,7 +47,6 @@ class Application with Server, RequestHandler {
           callback) {
     _lazyRouter();
     super.request(HttpMethod.httpPost, path, callback);
-    _router?.route(path);
     var route = _router?.route(path);
     route?.request(HttpMethod.httpPost, callback);
     return this;

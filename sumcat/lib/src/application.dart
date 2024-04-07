@@ -11,24 +11,27 @@ class Application with Server, RequestHandler {
     appHandle = handle;
   }
 
-  set(String setting, dynamic val) {
+  Application set(String setting, dynamic val) {
     _settings[setting] = val;
+    return this;
   }
 
-  use(String path, Function fn) {}
+  Application use(String path, Function fn) {
+    return this;
+  }
 
-  handle(HttpRequest req, HttpResponse res, Function? next) {
+  void handle(HttpRequest req, HttpResponse res, Function next) {
     _router?.handle(req, res, next);
   }
 
-  _lazyRouter() {
+  void _lazyRouter() {
     _router ??= Router();
   }
 
   @override
   HttpMethod get(
       String path,
-      void Function(HttpRequest req, HttpResponse res, Function? next)
+      void Function(HttpRequest req, HttpResponse res, Function next)
           callback) {
     _lazyRouter();
     super.request(HttpMethod.httpGet, path, callback);
@@ -40,7 +43,7 @@ class Application with Server, RequestHandler {
   @override
   HttpMethod post(
       String path,
-      void Function(HttpRequest req, HttpResponse res, Function? next)
+      void Function(HttpRequest req, HttpResponse res, Function next)
           callback) {
     _lazyRouter();
     super.request(HttpMethod.httpPost, path, callback);
@@ -52,7 +55,7 @@ class Application with Server, RequestHandler {
 
   HttpMethod all(
       String path,
-      void Function(HttpRequest req, HttpResponse res, Function? next)
+      void Function(HttpRequest req, HttpResponse res, Function next)
           callback) {
     _lazyRouter();
     for (var method in HttpMethod.methods) {

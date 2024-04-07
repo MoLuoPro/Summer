@@ -1,10 +1,10 @@
 part of http;
 
 mixin RequestHandler on Server implements HttpMethod {
-  Future<void> _request(String type, String path, Function callback) async {
+  Future<void> _request(String type, String path, Function handle) async {
     await _listened.future;
     server.forEach((req) async {
-      appHandle(req, req.response, callback);
+      appHandle(req, req.response, handle);
       // if (req.method == type || type == HttpMethod.httpAll) {
       //   if (req.uri.toString() == path) {
       //     callback.call(req, req.response);
@@ -20,7 +20,7 @@ mixin RequestHandler on Server implements HttpMethod {
   HttpMethod request(
       String type,
       String path,
-      void Function(HttpRequest req, HttpResponse res, Function? next)
+      void Function(HttpRequest req, HttpResponse res, Function next)
           callback) {
     _request(type, path, callback);
     return this;

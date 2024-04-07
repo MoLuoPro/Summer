@@ -8,7 +8,7 @@ class Route {
     _path = path;
   }
 
-  dispatch(HttpRequest req, HttpResponse res, Function done) {
+  void dispatch(HttpRequest req, HttpResponse res, Function done) {
     int sync = 0;
     int idx = 0;
     var stack = _stack;
@@ -16,11 +16,13 @@ class Route {
 
     void next({String err = ''}) {
       if (err == 'route') {
-        return done('');
+        done('');
+        return;
       }
 
       if (err == 'router') {
-        return done(err);
+        done(err);
+        return;
       }
 
       if (sync++ > 100) {
@@ -30,7 +32,8 @@ class Route {
       try {
         layer = stack[idx++];
       } on RangeError {
-        return done(err);
+        done(err);
+        return;
       }
       if (layer.method != method) {
         next(err: err);
@@ -43,5 +46,12 @@ class Route {
     }
 
     next();
+  }
+
+  Route request(String method, Function callback) {
+    var layer = HandleLayer('/', callback);
+    layer.method = method;
+    _stack.add(layer);
+    return this;
   }
 }

@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:summer_mvc/src/http/http.dart';
-import 'package:summer_mvc/src/router/router.dart';
+import 'package:sumcat/src/http/http.dart';
+import 'package:sumcat/src/router/router.dart';
 
 class Application with Server, RequestHandler {
   final Map<String, dynamic> _settings = {};

@@ -1,4 +1,4 @@
-import 'package:summer_mvc/src/application.dart';
+import '../../sumcat.dart';
 
 init(Application app) {
   return (req, res, next) => {};

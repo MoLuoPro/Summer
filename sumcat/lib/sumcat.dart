@@ -3,6 +3,6 @@
 /// More dartdocs go here.
 library sumcat;
 
-export 'src/sumcat_base.dart';
+export 'src/application.dart';
 
 // TODO: Export any libraries intended for clients of this package.

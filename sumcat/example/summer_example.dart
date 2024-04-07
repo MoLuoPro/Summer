@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:summer_mvc/summer_mvc.dart';
+import 'package:sumcat/sumcat.dart';
 
 void main() {
   var app = createApplication();

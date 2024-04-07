@@ -1,16 +1,12 @@
-import 'package:summer_mvc/summer_mvc.dart';
+import 'package:summer_mvc/summer_mvc.dart' show app;
 import 'package:test/test.dart';
 
 void main() {
   group('A group of tests', () {
-    final awesome = Awesome();
-
     setUp(() {
       // Additional setup goes here.
     });
 
-    test('First Test', () {
-      expect(awesome.isAwesome, isTrue);
-    });
+    test('First Test', () async {});
   });
 }

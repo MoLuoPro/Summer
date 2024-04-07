@@ -1,6 +1,10 @@
+import 'dart:io';
 import 'package:summer_mvc/summer_mvc.dart';
 
 void main() {
-  var awesome = Awesome();
-  print('awesome: ${awesome.isAwesome}');
+  var app = createApplication();
+  app.get("/test", (HttpRequest req, HttpResponse res, Function? next) {
+    res.write(req.uri);
+  });
+  app.listen(3000);
 }

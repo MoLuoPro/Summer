@@ -36,21 +36,22 @@ class Router {
     paramCallbacks[name]?.add(fn);
   }
 
-  void handle(HttpRequest req, HttpResponse res, Function? done) async {
+  void handle(HttpRequest req, HttpResponse res,
+      void Function(HttpRequest, HttpResponse, String?)? done) async {
     String? err;
     var idx = 0;
-    String? layerError = '';
+    String? layerError;
     while (true) {
       Layer? layer;
       Route? route;
       layerError = err == 'route' ? '' : err;
       if (layerError == 'router') {
-        Future.microtask(() => done?.call(''));
+        Future.microtask(() => done?.call(req, res, ''));
         return;
       }
 
       if (idx >= _stack.length) {
-        Future.microtask(() => done?.call(layerError));
+        Future.microtask(() => done?.call(req, res, layerError));
         return;
       }
 
@@ -63,12 +64,12 @@ class Router {
       }
 
       if (!match) {
-        done?.call('');
+        done?.call(req, res, '');
         return;
       }
 
       if (err != null && err.isNotEmpty) {
-        err = layerError != '' ? layerError : err;
+        err = layerError != null && layerError.isNotEmpty ? layerError : err;
       } else if (route != null) {
         var next = Completer<String?>();
         layer?.handleRequest(req, res, next);

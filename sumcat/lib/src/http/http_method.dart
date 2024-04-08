@@ -8,7 +8,7 @@ abstract class HttpMethod {
 
   HttpMethod request(
       void Function(HttpRequest req, HttpResponse res,
-              void Function([String? err])? done)
+              void Function(HttpRequest, HttpResponse, String?)? done)
           appHandle);
   HttpMethod get(
       String uri,

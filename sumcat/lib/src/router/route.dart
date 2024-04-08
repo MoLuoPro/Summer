@@ -14,7 +14,7 @@ class Route {
     var stack = _stack;
     var method = req.method;
     var idx = 0;
-    String? err = '';
+    String? err;
     while (true) {
       if (err == 'route') {
         done.complete('');

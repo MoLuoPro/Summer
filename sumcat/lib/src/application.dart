@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:sumcat/src/http/http.dart';
@@ -7,8 +8,10 @@ class Application with Server, RequestHandler {
   final Map<String, dynamic> _settings = {};
   Router? _router;
 
-  Application() {
-    appHandle = handle;
+  @override
+  Future<void> listen(int port) {
+    request(handle);
+    return super.listen(port);
   }
 
   Application set(String setting, dynamic val) {
@@ -20,8 +23,12 @@ class Application with Server, RequestHandler {
     return this;
   }
 
-  void handle(HttpRequest req, HttpResponse res, Function next) {
-    _router?.handle(req, res, next);
+  void handle(
+    HttpRequest req,
+    HttpResponse res, [
+    void Function([String? err])? done,
+  ]) {
+    _router?.handle(req, res, done);
   }
 
   void _lazyRouter() {
@@ -31,36 +38,45 @@ class Application with Server, RequestHandler {
   @override
   HttpMethod get(
       String path,
-      void Function(HttpRequest req, HttpResponse res, Function next)
-          callback) {
+      List<
+              void Function(
+                  HttpRequest req, HttpResponse res, Completer<String?> next)>
+          callbacks) {
     _lazyRouter();
-    super.request(HttpMethod.httpGet, path, callback);
     var route = _router?.route(path);
-    route?.request(HttpMethod.httpGet, callback);
+    for (var cb in callbacks) {
+      route?.request(HttpMethod.httpGet, cb);
+    }
     return this;
   }
 
   @override
   HttpMethod post(
       String path,
-      void Function(HttpRequest req, HttpResponse res, Function next)
-          callback) {
+      List<
+              void Function(
+                  HttpRequest req, HttpResponse res, Completer<String?> next)>
+          callbacks) {
     _lazyRouter();
-    super.request(HttpMethod.httpPost, path, callback);
     var route = _router?.route(path);
-    route?.request(HttpMethod.httpPost, callback);
+    for (var cb in callbacks) {
+      route?.request(HttpMethod.httpPost, cb);
+    }
     return this;
   }
 
   HttpMethod all(
       String path,
-      void Function(HttpRequest req, HttpResponse res, Function next)
-          callback) {
+      List<
+              void Function(
+                  HttpRequest req, HttpResponse res, Completer<String?> next)>
+          callbacks) {
     _lazyRouter();
     for (var method in HttpMethod.methods) {
-      super.request(method, path, callback);
       var route = _router?.route(path);
-      route?.request(method, callback);
+      for (var cb in callbacks) {
+        route?.request(method, cb);
+      }
     }
     return this;
   }

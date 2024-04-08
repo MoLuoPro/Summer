@@ -8,44 +8,44 @@ class Route {
     _path = path;
   }
 
-  void dispatch(HttpRequest req, HttpResponse res, Function done) {
-    int sync = 0;
-    int idx = 0;
+  ///分发req,res给当前route下的handle
+  Future<void> dispatch(
+      HttpRequest req, HttpResponse res, Completer<String?> done) async {
     var stack = _stack;
-    String method = req.method;
-
-    void next({String err = ''}) {
+    var method = req.method;
+    var idx = 0;
+    String? err = '';
+    while (true) {
       if (err == 'route') {
-        done('');
+        done.complete('');
         return;
       }
 
       if (err == 'router') {
-        done(err);
+        done.complete(err);
         return;
       }
 
-      if (sync++ > 100) {
-        Future.microtask(() => next());
-      }
       Layer layer;
       try {
         layer = stack[idx++];
       } on RangeError {
-        done(err);
+        done.complete(err);
         return;
       }
-      if (layer.method != method) {
-        next(err: err);
-      } else if (err != '') {
-        layer.handleError(err, req, res, next);
-      } else {
-        layer.handleRequest(req, res, next);
-      }
-      sync = 0;
-    }
 
-    next();
+      if (layer.method != method) {
+        continue;
+      } else if (err != null && err.isNotEmpty) {
+        var next = Completer<String?>();
+        layer.handleError(err, req, res, next);
+        err = await next.future;
+      } else {
+        var next = Completer<String?>();
+        layer.handleRequest(req, res, next);
+        err = await next.future;
+      }
+    }
   }
 
   Route request(String method, Function callback) {

@@ -1,5 +1,6 @@
 library router;
 
+import 'dart:async';
 import 'dart:io';
 
 import '../layer/layer.dart';
@@ -35,51 +36,45 @@ class Router {
     paramCallbacks[name]?.add(fn);
   }
 
-  void handle(HttpRequest req, HttpResponse res, Function done) {
-    var sync = 0;
+  void handle(HttpRequest req, HttpResponse res, Function? done) async {
+    String? err;
     var idx = 0;
-
-    void next({String err = ''}) {
-      var matched = false;
-      var layerError = err == 'route' ? '' : err;
+    String? layerError = '';
+    while (true) {
       Layer? layer;
       Route? route;
-
+      layerError = err == 'route' ? '' : err;
       if (layerError == 'router') {
-        Future.microtask(() => done());
+        Future.microtask(() => done?.call(''));
         return;
       }
 
       if (idx >= _stack.length) {
-        Future.microtask(() => done(layerError));
+        Future.microtask(() => done?.call(layerError));
         return;
       }
 
-      if (sync++ > 100) {
-        Future.microtask(() => done());
-        return;
-      }
-
-      while (!matched && idx < _stack.length) {
-        layer = _stack[idx];
+      var match = false;
+      while (!match && idx < _stack.length) {
+        layer = _stack[idx++];
         var path = req.uri;
         route = layer.route;
-        matched = layer.match(path.path);
+        match = layer.match(path.path);
       }
 
-      if (!matched) {
-        done();
+      if (!match) {
+        done?.call('');
         return;
       }
 
-      if (err != '') {
-        next(err: layerError != '' ? layerError : err);
+      if (err != null && err.isNotEmpty) {
+        err = layerError != '' ? layerError : err;
       } else if (route != null) {
+        var next = Completer<String?>();
         layer?.handleRequest(req, res, next);
+        err = await next.future;
       } else {}
     }
-
-    next();
   }
 
   void _processParams(HttpRequest req, HttpResponse res, Function done) {

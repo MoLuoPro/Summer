@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:mirrors';
 
@@ -20,31 +21,36 @@ abstract class Layer {
     return path == _path;
   }
 
-  void handleRequest(
-      HttpRequest req, HttpResponse res, void Function({String err}) next) {
-    var funcMirror = (reflect(next) as ClosureMirror).function;
-    if (funcMirror.parameters.length > 3) {
-      next();
-      return;
-    }
+  Future<void> handleRequest(
+      HttpRequest req, HttpResponse res, Completer<String?> next) async {
+    // var funcMirror = (reflect(next) as ClosureMirror).function;
+    // if (funcMirror.parameters.length > 3) {
+    //   next();
+    //   return;
+    // }
+    // try {
+    //   _fn(req, res, next);
+    // } catch (err) {
+    //   next(err: err.toString());
+    // }
     try {
-      _fn(req, res, next);
+      await _fn(req, res, next);
     } catch (err) {
-      next(err: err.toString());
+      next.complete(err.toString());
     }
   }
 
-  void handleError(
-      String err, HttpRequest req, HttpResponse res, Function next) {
-    var funcMirror = (reflect(next) as ClosureMirror).function;
-    if (funcMirror.parameters.length != 4) {
-      next(err);
-      return;
-    }
+  Future<void> handleError(String? err, HttpRequest req, HttpResponse res,
+      Completer<String?> next) async {
+    // var funcMirror = (reflect(next) as ClosureMirror).function;
+    // if (funcMirror.parameters.length != 4) {
+    //   next(err);
+    //   return;
+    // }
     try {
-      _fn(err, req, res, next);
+      await _fn(err, req, res, next);
     } catch (err) {
-      next(err);
+      next.complete(err.toString());
     }
   }
 }

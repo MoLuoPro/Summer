@@ -1,10 +1,17 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:sumcat/sumcat.dart';
 
 void main() {
   var app = createApplication();
-  app.get("/test", (HttpRequest req, HttpResponse res, Function next) {
-    res.write(req.uri);
-  });
-  app.listen(3000);
+  app.get("/test", [
+    (HttpRequest req, HttpResponse res, Completer<String?> next) {
+      print('1');
+      next.complete();
+    },
+    (HttpRequest req, HttpResponse res, Completer<String?> next) {
+      print('2');
+    }
+  ]);
+  app.listen(4000);
 }

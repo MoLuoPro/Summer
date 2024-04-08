@@ -38,14 +38,15 @@ class Route {
         continue;
       } else if (err != null && err.isNotEmpty) {
         var next = Completer<String?>();
-        layer.handleError(err, req, res, next);
+        await layer.handleError(err, req, res, next);
         err = await next.future;
       } else {
         var next = Completer<String?>();
-        layer.handleRequest(req, res, next);
+        await layer.handleRequest(req, res, next);
         err = await next.future;
       }
     }
+    print('end');
   }
 
   Route request(String method, Function callback) {

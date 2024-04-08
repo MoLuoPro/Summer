@@ -36,7 +36,13 @@ abstract class Layer {
     try {
       await _fn(req, res, next);
     } catch (err) {
-      next.complete(err.toString());
+      if (!next.isCompleted) {
+        next.complete(err.toString());
+      }
+    } finally {
+      if (!next.isCompleted) {
+        next.complete("finish");
+      }
     }
   }
 
@@ -51,6 +57,10 @@ abstract class Layer {
       await _fn(err, req, res, next);
     } catch (err) {
       next.complete(err.toString());
+    } finally {
+      if (!next.isCompleted) {
+        next.complete("finish");
+      }
     }
   }
 }

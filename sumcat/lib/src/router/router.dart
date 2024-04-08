@@ -47,12 +47,12 @@ class Router {
       layerError = err == 'route' ? '' : err;
       if (layerError == 'router') {
         Future.microtask(() => done?.call(req, res, ''));
-        return;
+        break;
       }
 
       if (idx >= _stack.length) {
         Future.microtask(() => done?.call(req, res, layerError));
-        return;
+        break;
       }
 
       var match = false;
@@ -61,18 +61,27 @@ class Router {
         var path = req.uri;
         route = layer.route;
         match = layer.match(path.path);
+        if (!match) {
+          continue;
+        }
+        if (route == null) {
+          continue;
+        }
+        if (layerError != null && layerError.isNotEmpty) {
+          match = false;
+        }
       }
 
       if (!match) {
         done?.call(req, res, '');
-        return;
+        break;
       }
 
       if (err != null && err.isNotEmpty) {
         err = layerError != null && layerError.isNotEmpty ? layerError : err;
       } else if (route != null) {
         var next = Completer<String?>();
-        layer?.handleRequest(req, res, next);
+        await layer?.handleRequest(req, res, next);
         err = await next.future;
       } else {}
     }

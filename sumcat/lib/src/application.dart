@@ -28,7 +28,8 @@ class Application with Server, RequestHandler {
     HttpResponse res, [
     void Function(HttpRequest, HttpResponse, String?)? done,
   ]) {
-    _router?.handle(req, res, finalHandler);
+    var handler = done ?? finalHandler;
+    _router?.handle(req, res, handler);
   }
 
   void _lazyRouter() {

@@ -7,7 +7,6 @@ void main() {
   app.get("/test", [
     (HttpRequest req, HttpResponse res, Completer<String?> next) {
       res.writeln("1");
-      next.complete();
     },
     (HttpRequest req, HttpResponse res, Completer<String?> next) {
       res.writeln("2");

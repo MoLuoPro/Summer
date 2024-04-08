@@ -45,7 +45,7 @@ class Router {
       Layer? layer;
       Route? route;
       layerError = err == 'route' ? '' : err;
-      if (layerError == 'router') {
+      if (layerError == 'router' || layerError == 'finish') {
         Future.microtask(() => done?.call(req, res, ''));
         break;
       }

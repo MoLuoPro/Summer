@@ -21,7 +21,7 @@ class Route {
         return;
       }
 
-      if (err == 'router') {
+      if (err == 'router' || err == 'finish') {
         done.complete(err);
         return;
       }
@@ -36,17 +36,16 @@ class Route {
 
       if (layer.method != method) {
         continue;
-      } else if (err != null && err.isNotEmpty) {
-        var next = Completer<String?>();
-        await layer.handleError(err, req, res, next);
-        err = await next.future;
       } else {
         var next = Completer<String?>();
-        await layer.handleRequest(req, res, next);
+        if (err != null && err.isNotEmpty) {
+          await layer.handleError(err, req, res, next);
+        } else {
+          await layer.handleRequest(req, res, next);
+        }
         err = await next.future;
       }
     }
-    print('end');
   }
 
   Route request(String method, Function callback) {

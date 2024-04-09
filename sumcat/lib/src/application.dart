@@ -26,7 +26,7 @@ class Application with Server, RequestHandler {
 
   Application params(
       List<String> names,
-      void Function(HttpRequestWrapper, HttpResponse, Completer<String?>,
+      void Function(HttpRequestWrapper, HttpResponseWrapper, Completer<String?>,
               dynamic, String name)
           fn) {
     for (var name in names) {
@@ -37,7 +37,7 @@ class Application with Server, RequestHandler {
 
   Application param(
       String name,
-      void Function(HttpRequestWrapper, HttpResponse, Completer<String?>,
+      void Function(HttpRequestWrapper, HttpResponseWrapper, Completer<String?>,
               dynamic, String name)
           fn) {
     _router?.param(name, fn);
@@ -46,8 +46,8 @@ class Application with Server, RequestHandler {
 
   void handle(
     HttpRequestWrapper req,
-    HttpResponse res, [
-    void Function(HttpRequestWrapper, HttpResponse, String?)? done,
+    HttpResponseWrapper res, [
+    void Function(HttpRequestWrapper, HttpResponseWrapper, String?)? done,
   ]) {
     var handler = done ?? finalHandler;
     _router?.handle(req, res, handler);
@@ -61,7 +61,7 @@ class Application with Server, RequestHandler {
   HttpMethod get(
       String path,
       List<
-              void Function(HttpRequestWrapper req, HttpResponse res,
+              void Function(HttpRequestWrapper req, HttpResponseWrapper res,
                   Completer<String?> next)>
           callbacks) {
     _lazyRouter();
@@ -76,7 +76,7 @@ class Application with Server, RequestHandler {
   HttpMethod post(
       String path,
       List<
-              void Function(HttpRequestWrapper req, HttpResponse res,
+              void Function(HttpRequestWrapper req, HttpResponseWrapper res,
                   Completer<String?> next)>
           callbacks) {
     _lazyRouter();
@@ -90,7 +90,7 @@ class Application with Server, RequestHandler {
   HttpMethod all(
       String path,
       List<
-              void Function(HttpRequestWrapper req, HttpResponse res,
+              void Function(HttpRequestWrapper req, HttpResponseWrapper res,
                   Completer<String?> next)>
           callbacks) {
     _lazyRouter();

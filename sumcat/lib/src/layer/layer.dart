@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:sumcat/src/http/http.dart';
 
@@ -53,8 +52,8 @@ abstract class Layer {
     return true;
   }
 
-  Future<void> handleRequest(
-      HttpRequestWrapper req, HttpResponse res, Completer<String?> next) async {
+  Future<void> handleRequest(HttpRequestWrapper req, HttpResponseWrapper res,
+      Completer<String?> next) async {
     try {
       await _fn(req, res, next);
     } catch (err) {
@@ -69,7 +68,7 @@ abstract class Layer {
   }
 
   Future<void> handleError(String? err, HttpRequestWrapper req,
-      HttpResponse res, Completer<String?> next) async {
+      HttpResponseWrapper res, Completer<String?> next) async {
     try {
       await _fn(err, req, res, next);
     } catch (err) {

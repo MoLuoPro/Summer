@@ -9,10 +9,10 @@ class Route {
   }
 
   ///分发req,res给当前route下的handle
-  Future<void> dispatch(
-      HttpRequestWrapper req, HttpResponse res, Completer<String?> done) async {
+  Future<void> dispatch(HttpRequestWrapper req, HttpResponseWrapper res,
+      Completer<String?> done) async {
     var stack = _stack;
-    var method = req.method;
+    var method = req.inner.method;
     var idx = 0;
     String? err;
     while (true) {

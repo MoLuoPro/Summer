@@ -1,17 +1,15 @@
 import 'dart:async';
-import 'dart:io';
-import 'package:sumcat/src/http/http.dart';
 import 'package:sumcat/sumcat.dart';
 
 void main() {
   var app = createApplication();
   app.get("/test/:id", [
-    (HttpRequestWrapper req, HttpResponse res, Completer<String?> next) {
-      res.writeln("1");
+    (HttpRequestWrapper req, HttpResponseWrapper res, Completer<String?> next) {
+      res.inner.write("1");
       next.complete();
     },
-    (HttpRequestWrapper req, HttpResponse res, Completer<String?> next) {
-      res.writeln("2");
+    (HttpRequestWrapper req, HttpResponseWrapper res, Completer<String?> next) {
+      res.inner.write("2");
     }
   ]);
   app.param('id', (req, res, next, value, name) {

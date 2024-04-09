@@ -1,8 +1,8 @@
 part of http;
 
 Future<void> finalHandler(
-    HttpRequestWrapper req, HttpResponse res, String? err) async {
-  var code = res.statusCode;
+    HttpRequestWrapper req, HttpResponseWrapper res, String? err) async {
+  var code = res._inner.statusCode;
   //res.writeln('status code: $code');
-  await res.close();
+  await res.inner.close();
 }

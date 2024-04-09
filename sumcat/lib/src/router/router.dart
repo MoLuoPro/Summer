@@ -31,15 +31,18 @@ class Router {
 
   void param(
       String name,
-      void Function(HttpRequestWrapper, HttpResponse, Completer<String?>,
+      void Function(HttpRequestWrapper, HttpResponseWrapper, Completer<String?>,
               dynamic, String name)
           fn) {
     _params[name] ??= [];
     _params[name]?.add(fn);
   }
 
-  void handle(HttpRequestWrapper req, HttpResponse res,
-      void Function(HttpRequestWrapper, HttpResponse, String?)? done) async {
+  void handle(
+      HttpRequestWrapper req,
+      HttpResponseWrapper res,
+      void Function(HttpRequestWrapper, HttpResponseWrapper, String?)?
+          done) async {
     String? err;
     String? layerError;
     var idx = 0;
@@ -61,7 +64,7 @@ class Router {
       var match = false;
       while (!match && idx < _stack.length) {
         layer = _stack[idx++];
-        var path = req.uri;
+        var path = req.inner.uri;
         route = layer.route;
         match = layer.match(path.path);
         if (!match) {
@@ -86,7 +89,7 @@ class Router {
           Layer layer,
           Map<String, Map<String, dynamic>> called,
           HttpRequestWrapper req,
-          HttpResponse res,
+          HttpResponseWrapper res,
           Future<void> Function([String?]) done) async {
         var keys = layer.keys;
         var idx = 0;

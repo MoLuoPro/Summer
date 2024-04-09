@@ -14,9 +14,10 @@ void main() {
       res.writeln("2");
     }
   ]);
-  app.param('id', (req, res, next, id, name) {
-    print(id);
-    //next.complete();
+  app.param('id', (req, res, next, value, name) {
+    print('$name: $value');
+    print(req.params);
+    next.complete();
   });
   app.listen(4000);
 }

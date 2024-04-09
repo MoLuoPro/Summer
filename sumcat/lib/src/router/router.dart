@@ -80,7 +80,7 @@ class Router {
         break;
       }
 
-      req.params = layer!.param;
+      req.params.addAll(layer!.param);
 
       Future<void> processParams(
           Layer layer,
@@ -124,29 +124,26 @@ class Router {
           var i = 0;
           while (true) {
             paramCalled['value'] = req.params[key];
-            if (err != null && err.isNotEmpty && err != 'finish') {
+            if (err != null && err.isNotEmpty) {
               paramCalled['error'] = err;
-              continue;
+              break;
             }
             Function fn;
             var completer = Completer<String?>();
-            try {
-              fn = paramCallbacks[i++];
+            if (i >= paramCallbacks.length) {
+              break;
+            } else {
               try {
+                fn = paramCallbacks[i++];
                 fn(req, res, completer, paramVal, key);
+              } catch (e) {
+                err = e.toString();
               } finally {
                 if (!completer.isCompleted) {
                   completer.complete('finish');
                 }
               }
               err = await completer.future;
-              if (err == 'finish') {
-                continue;
-              }
-            } on RangeError {
-              break;
-            } catch (e) {
-              err = e.toString();
             }
           }
         }

@@ -8,15 +8,26 @@ import '../layer/layer.dart';
 
 part './route.dart';
 
-class Router {
+class Router implements HttpMethod {
   final List<Layer> _stack = [];
   final Map<String, List<Function>> _params = {};
 
-  Router use({String path = '/', required List<Function> fns}) {
+  Router use(
+      {String path = '/',
+      required List<
+              void Function(
+                  HttpRequestWrapper, HttpResponseWrapper, Completer<String?>)>
+          fns}) {
     for (var fn in fns) {
       var layer = MiddlewareLayer(path, fn);
       _stack.add(layer);
     }
+    return this;
+  }
+
+  Router useRouter({String path = '/', required Router router}) {
+    var layer = RouterLayer(path, router.handle);
+    _stack.add(layer);
     return this;
   }
 
@@ -37,7 +48,7 @@ class Router {
     _params[name]?.add(fn);
   }
 
-  void handle(
+  Future<void> handle(
       HttpRequestWrapper req,
       HttpResponseWrapper res,
       void Function(HttpRequestWrapper, HttpResponseWrapper, String?)?
@@ -45,7 +56,10 @@ class Router {
     String? err;
     String? layerError;
     var idx = 0;
+    String removed = '';
+    String parentPath = req.baseUrl;
     Map<String, Map<String, dynamic>> paramCalled = {};
+
     while (true) {
       Layer? layer;
       Route? route;
@@ -61,11 +75,17 @@ class Router {
       }
 
       var match = false;
+
+      var uri = req.inner.uri;
+      if (removed.isNotEmpty) {
+        req.baseUrl = parentPath;
+        removed = '';
+      }
       while (!match && idx < _stack.length) {
         layer = _stack[idx++];
-        var path = req.inner.uri;
         route = layer.route;
-        match = layer.match(path.path);
+        String path = getPathName(req, layer.path);
+        match = layer.match(path);
         if (!match) {
           continue;
         }
@@ -151,7 +171,7 @@ class Router {
         }
       }
 
-      void trimPrefix(
+      Future<void> trimPrefix(
           Layer layer, String layerError, String layerPath, String path) async {
         if (layerPath.isNotEmpty) {
           if (layerPath != path.substring(0, layerPath.length)) {
@@ -171,7 +191,12 @@ class Router {
             return;
           }
 
-          var next = Completer<String?>();
+          removed = req.baseUrl += layerPath;
+        }
+        var next = Completer<String?>();
+        if (layer is RouterLayer) {
+          await layer.handle(req, res, done);
+        } else {
           layerError.isNotEmpty
               ? await layer.handleError(err, req, res, next)
               : await layer.handleRequest(req, res, next);
@@ -187,9 +212,44 @@ class Router {
           await layer.handleRequest(req, res, next);
           err = await next.future;
         } else {
-          trimPrefix(layer!, layerError ?? '', layer.path, req.inner.uri.path);
+          await trimPrefix(
+              layer!, layerError ?? '', layer.path, req.inner.uri.path);
         }
       });
     }
+  }
+
+  String getPathName(HttpRequestWrapper req, String layerPath) {
+    return layerPath == '/'
+        ? req.inner.uri.path
+        : req.inner.uri.path.substring(req.baseUrl.length);
+  }
+
+  @override
+  HttpMethod get(
+      String uri,
+      List<
+              void Function(HttpRequestWrapper req, HttpResponseWrapper res,
+                  Completer<String?> next)>
+          callbacks) {
+    var route = this.route(uri);
+    for (var callback in callbacks) {
+      route.request(HttpMethod.httpGet, callback);
+    }
+    return this;
+  }
+
+  @override
+  HttpMethod post(
+      String uri,
+      List<
+              void Function(HttpRequestWrapper req, HttpResponseWrapper res,
+                  Completer<String?> next)>
+          callbacks) {
+    var route = this.route(uri);
+    for (var callback in callbacks) {
+      route.request(HttpMethod.httpPost, callback);
+    }
+    return this;
   }
 }

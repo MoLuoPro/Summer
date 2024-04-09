@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:sumcat/src/http/http.dart';
 
 import '../router/router.dart';
@@ -25,7 +26,9 @@ abstract class Layer {
     _fn = fn;
     _fastStar = path == '*';
     _fastSlash = path == '/';
-    _regExp = RegExpUtils.pathRegExp(path, _keys = []);
+    _regExp = pathToRegExp(path,
+        parameters: _keys = [], caseSensitive: false, prefix: true);
+    // _regExp = RegExpUtils.pathRegExp(path, _keys = []);
   }
 
   bool match(String path) {
@@ -99,6 +102,18 @@ class MiddlewareLayer extends Layer {
   MiddlewareLayer(String path, Function fn) : super(path, fn);
 }
 
+class RouterLayer extends Layer {
+  RouterLayer(String path, Function fn) : super(path, fn);
+
+  Future<void> handle(
+      HttpRequestWrapper req,
+      HttpResponseWrapper res,
+      void Function(HttpRequestWrapper, HttpResponseWrapper, String?)?
+          done) async {
+    await _fn(req, res, done);
+  }
+}
+
 class RegExpUtils {
   static RegExp pathRegExp(String pattern, List<String> keys) {
     // 将 pattern 中的特殊字符转义
@@ -111,7 +126,7 @@ class RegExpUtils {
       if (param != null) {
         keys.add(param.substring(1));
       }
-      return "([^/]+)";
+      return "([/]*)";
     });
     return RegExp("^$regex");
   }

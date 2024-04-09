@@ -6,13 +6,6 @@ abstract class HttpMethod {
   static const String httpPost = 'POST';
   static const List<String> methods = [httpGet, httpPost];
 
-  HttpMethod request(
-      void Function(
-              HttpRequestWrapper req,
-              HttpResponseWrapper res,
-              void Function(HttpRequestWrapper, HttpResponseWrapper, String?)?
-                  done)
-          appHandle);
   HttpMethod get(
       String uri,
       List<

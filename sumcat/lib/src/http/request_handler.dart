@@ -15,7 +15,6 @@ mixin RequestHandler on Server implements HttpMethod {
     });
   }
 
-  @override
   HttpMethod request(
       void Function(
               HttpRequestWrapper req,

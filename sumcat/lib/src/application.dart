@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:sumcat/src/http/http.dart';
 import 'package:sumcat/src/router/router.dart';
@@ -25,7 +24,14 @@ class Application with Server, RequestHandler {
               void Function(
                   HttpRequestWrapper, HttpResponseWrapper, Completer<String?>)>
           fns}) {
+    _lazyRouter();
     _router?.use(path: path, fns: fns);
+    return this;
+  }
+
+  Application useRouter({String path = '/', required Router router}) {
+    _lazyRouter();
+    _router?.useRouter(path: path, router: router);
     return this;
   }
 
@@ -34,6 +40,7 @@ class Application with Server, RequestHandler {
       void Function(HttpRequestWrapper, HttpResponseWrapper, Completer<String?>,
               dynamic, String name)
           fn) {
+    _lazyRouter();
     for (var name in names) {
       param(name, fn);
     }
@@ -45,6 +52,7 @@ class Application with Server, RequestHandler {
       void Function(HttpRequestWrapper, HttpResponseWrapper, Completer<String?>,
               dynamic, String name)
           fn) {
+    _lazyRouter();
     _router?.param(name, fn);
     return this;
   }
@@ -55,6 +63,7 @@ class Application with Server, RequestHandler {
     void Function(HttpRequestWrapper, HttpResponseWrapper, String?)? done,
   ]) {
     var handler = done ?? finalHandler;
+    _lazyRouter();
     _router?.handle(req, res, handler);
   }
 

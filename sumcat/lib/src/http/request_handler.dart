@@ -10,8 +10,8 @@ mixin RequestHandler on Server implements HttpMethod {
           appHandle) async {
     await _listened.future;
     server.forEach((req) async {
-      appHandle(
-          HttpRequestWrapper(req), HttpResponseWrapper(req.response), null);
+      appHandle(HttpRequestWrapperInternal(req),
+          HttpResponseWrapperInternal(req.response), null);
     });
   }
 

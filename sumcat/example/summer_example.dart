@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'package:sumcat/sumcat.dart';
 
 void main() {
@@ -25,7 +24,6 @@ void main() {
   ]);
   //参数前置处理器
   router.param('id', (req, res, next, value, name) {
-    print('$name: $value');
     print(req.params);
     req.params.update('id', (value) => int.parse(value) + 10);
     next.complete();

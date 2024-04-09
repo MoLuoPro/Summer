@@ -18,6 +18,10 @@ class HttpRequestWrapper {
   HttpRequest get inner => _inner;
   Map<String, dynamic> get params => _params;
   String get baseUrl => _baseUrl;
+}
+
+class HttpRequestWrapperInternal extends HttpRequestWrapper {
+  HttpRequestWrapperInternal(HttpRequest inner) : super(inner);
   set baseUrl(value) => _baseUrl = value;
 }
 
@@ -27,4 +31,8 @@ class HttpResponseWrapper {
   HttpResponse get inner => _inner;
 
   HttpResponseWrapper(this._inner);
+}
+
+class HttpResponseWrapperInternal extends HttpResponseWrapper {
+  HttpResponseWrapperInternal(HttpResponse inner) : super(inner);
 }

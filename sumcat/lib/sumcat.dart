@@ -5,7 +5,11 @@ library sumcat;
 
 export 'src/application.dart' show Application, createApplication;
 export 'src/http/http.dart'
-    show HttpRequestWrapper, HttpResponseWrapper, HttpMethod;
+    show
+        HttpRequestWrapper,
+        HttpResponseWrapper,
+        HttpMethod,
+        HttpRequestWrapperExtension;
 export 'src/router/router.dart' show Route, Router;
 
 // TODO: Export any libraries intended for clients of this package.

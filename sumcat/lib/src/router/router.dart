@@ -78,7 +78,8 @@ class Router implements HttpMethod {
 
       var uri = req.inner.uri;
       if (removed.isNotEmpty) {
-        req.baseUrl = parentPath;
+        (req as HttpRequestWrapperInternal).baseUrl = parentPath;
+
         removed = '';
       }
       while (!match && idx < _stack.length) {
@@ -191,7 +192,7 @@ class Router implements HttpMethod {
             return;
           }
 
-          removed = req.baseUrl += layerPath;
+          removed = (req as HttpRequestWrapperInternal).baseUrl += layerPath;
         }
         var next = Completer<String?>();
         if (layer is RouterLayer) {

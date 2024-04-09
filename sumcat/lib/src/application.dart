@@ -19,7 +19,12 @@ class Application with Server, RequestHandler {
     return this;
   }
 
-  Application use({String path = '/', required List<Function> fns}) {
+  Application use(
+      {String path = '/',
+      required List<
+              void Function(
+                  HttpRequestWrapper, HttpResponseWrapper, Completer<String?>)>
+          fns}) {
     _router?.use(path: path, fns: fns);
     return this;
   }

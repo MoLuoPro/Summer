@@ -1,7 +1,6 @@
 library router;
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:sumcat/src/http/http.dart';
 
@@ -92,7 +91,7 @@ class Router {
           HttpResponseWrapper res,
           Future<void> Function([String?]) done) async {
         var keys = layer.keys;
-        var idx = 0;
+        var keyIdx = 0;
         String? err = '';
         if (keys.isEmpty) {
           return done();
@@ -101,10 +100,10 @@ class Router {
           if (err != null && err.isNotEmpty) {
             return await done(err);
           }
-          if (idx >= keys.length) {
+          if (keyIdx >= keys.length) {
             return await done();
           }
-          var key = keys[idx++];
+          var key = keys[keyIdx++];
           var paramVal = layer.param[key];
           var paramCallbacks = _params[key];
           var paramCalled = called[key];
@@ -152,6 +151,34 @@ class Router {
         }
       }
 
+      void trimPrefix(
+          Layer layer, String layerError, String layerPath, String path) async {
+        if (layerPath.isNotEmpty) {
+          if (layerPath != path.substring(0, layerPath.length)) {
+            err = layerError;
+            return;
+          }
+
+          var c = '';
+          try {
+            c = path[layerPath.length];
+          } on RangeError {
+            err = layerError;
+            return;
+          }
+          if (c != '/' && c != '.') {
+            err = layerError;
+            return;
+          }
+
+          var next = Completer<String?>();
+          layerError.isNotEmpty
+              ? await layer.handleError(err, req, res, next)
+              : await layer.handleRequest(req, res, next);
+          layerError = await next.future ?? '';
+        }
+      }
+
       await processParams(layer, paramCalled, req, res, ([String? err]) async {
         if (err != null && err.isNotEmpty) {
           err = layerError != null && layerError.isNotEmpty ? layerError : err;
@@ -159,11 +186,10 @@ class Router {
           var next = Completer<String?>();
           await layer.handleRequest(req, res, next);
           err = await next.future;
-        } else {}
+        } else {
+          trimPrefix(layer!, layerError ?? '', layer.path, req.inner.uri.path);
+        }
       });
     }
   }
-
-  void trimPrefix(
-      Layer layer, String layerError, String layerPath, String path) {}
 }

@@ -18,6 +18,7 @@ abstract class Layer {
   Map<String, dynamic> param = {};
 
   List<String> get keys => _keys;
+  String get path => _path;
 
   Layer(String path, Function fn) {
     _path = path;
@@ -112,7 +113,7 @@ class RegExpUtils {
       }
       return "([^/]+)";
     });
-    return RegExp("^$regex\$");
+    return RegExp("^$regex");
   }
 
   static List<String> exec(RegExp regExp, String path) {

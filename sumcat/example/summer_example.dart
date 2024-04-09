@@ -10,6 +10,13 @@ void main() {
     },
     (HttpRequestWrapper req, HttpResponseWrapper res, Completer<String?> next) {
       res.inner.write("2");
+      next.complete();
+    }
+  ]);
+  app.use(path: '/test', fns: [
+    (req, res, next) {
+      print('use');
+      next.complete();
     }
   ]);
   app.param('id', (req, res, next, value, name) {

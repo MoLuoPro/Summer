@@ -1,7 +1,7 @@
 part of router;
 
 class Route {
-  List _stack = [];
+  final List _stack = [];
   late String _path;
 
   Route(String path) {
@@ -10,7 +10,7 @@ class Route {
 
   ///分发req,res给当前route下的handle
   Future<void> dispatch(
-      HttpRequest req, HttpResponse res, Completer<String?> done) async {
+      HttpRequestWrapper req, HttpResponse res, Completer<String?> done) async {
     var stack = _stack;
     var method = req.method;
     var idx = 0;
@@ -38,11 +38,9 @@ class Route {
         continue;
       } else {
         var next = Completer<String?>();
-        if (err != null && err.isNotEmpty) {
-          await layer.handleError(err, req, res, next);
-        } else {
-          await layer.handleRequest(req, res, next);
-        }
+        err != null && err.isNotEmpty
+            ? await layer.handleError(err, req, res, next)
+            : await layer.handleRequest(req, res, next);
         err = await next.future;
       }
     }

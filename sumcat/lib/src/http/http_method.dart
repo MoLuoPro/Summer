@@ -7,19 +7,19 @@ abstract class HttpMethod {
   static const List<String> methods = [httpGet, httpPost];
 
   HttpMethod request(
-      void Function(HttpRequest req, HttpResponse res,
-              void Function(HttpRequest, HttpResponse, String?)? done)
+      void Function(HttpRequestWrapper req, HttpResponse res,
+              void Function(HttpRequestWrapper, HttpResponse, String?)? done)
           appHandle);
   HttpMethod get(
       String uri,
       List<
-              void Function(
-                  HttpRequest req, HttpResponse res, Completer<String?> next)>
+              void Function(HttpRequestWrapper req, HttpResponse res,
+                  Completer<String?> next)>
           callbacks);
   HttpMethod post(
       String uri,
       List<
-              void Function(
-                  HttpRequest req, HttpResponse res, Completer<String?> next)>
+              void Function(HttpRequestWrapper req, HttpResponse res,
+                  Completer<String?> next)>
           callbacks);
 }

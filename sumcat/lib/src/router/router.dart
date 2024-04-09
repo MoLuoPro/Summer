@@ -3,19 +3,17 @@ library router;
 import 'dart:async';
 import 'dart:io';
 
+import 'package:sumcat/src/http/http.dart';
+
 import '../layer/layer.dart';
 
 part './route.dart';
 
 class Router {
-  List<Layer> _stack = [];
-  Map<String, List<void Function(String name, Function fn)>> paramCallbacks =
-      {};
+  final List<Layer> _stack = [];
+  final Map<String, List<Function>> _params = {};
 
   Router use({String path = '/', required List<Function> fns}) {
-    if (fns.isEmpty) {
-      ArgumentError.notNull("fns");
-    }
     for (var fn in fns) {
       var layer = MiddlewareLayer(path, fn);
       _stack.add(layer);
@@ -31,16 +29,21 @@ class Router {
     return route;
   }
 
-  void param(String name, void Function(String name, Function fn) fn) {
-    paramCallbacks[name] ??= [];
-    paramCallbacks[name]?.add(fn);
+  void param(
+      String name,
+      void Function(HttpRequestWrapper, HttpResponse, Completer<String?>,
+              dynamic, String name)
+          fn) {
+    _params[name] ??= [];
+    _params[name]?.add(fn);
   }
 
-  void handle(HttpRequest req, HttpResponse res,
-      void Function(HttpRequest, HttpResponse, String?)? done) async {
+  void handle(HttpRequestWrapper req, HttpResponse res,
+      void Function(HttpRequestWrapper, HttpResponse, String?)? done) async {
     String? err;
-    var idx = 0;
     String? layerError;
+    var idx = 0;
+    Map<String, Map<String, dynamic>> paramCalled = {};
     while (true) {
       Layer? layer;
       Route? route;
@@ -77,18 +80,90 @@ class Router {
         break;
       }
 
-      if (err != null && err.isNotEmpty) {
-        err = layerError != null && layerError.isNotEmpty ? layerError : err;
-      } else if (route != null) {
-        var next = Completer<String?>();
-        await layer?.handleRequest(req, res, next);
-        err = await next.future;
-      } else {}
+      req.params = layer!.param;
+
+      Future<void> processParams(
+          Layer layer,
+          Map<String, Map<String, dynamic>> called,
+          HttpRequestWrapper req,
+          HttpResponse res,
+          Future<void> Function([String?]) done) async {
+        var keys = layer.keys;
+        var idx = 0;
+        String? err = '';
+        if (keys.isEmpty) {
+          return done();
+        }
+        while (true) {
+          if (err != null && err.isNotEmpty) {
+            return await done(err);
+          }
+          if (idx >= keys.length) {
+            return await done();
+          }
+          var key = keys[idx++];
+          var paramVal = layer.param[key];
+          var paramCallbacks = _params[key];
+          var paramCalled = called[key];
+          if (paramVal == null || paramCallbacks == null) {
+            continue;
+          }
+          if (paramCalled != null &&
+              (paramCalled['match'] == paramVal ||
+                  (paramCalled['err'] != null &&
+                      paramCalled['error'] != 'route'))) {
+            req.params[key] = paramCalled['value'];
+            err = paramCalled['error'];
+            continue;
+          }
+          called[key] = paramCalled = {
+            'error': null,
+            'match': paramVal,
+            'value': paramVal
+          };
+          var i = 0;
+          while (true) {
+            paramCalled['value'] = req.params[key];
+            if (err != null && err.isNotEmpty && err != 'finish') {
+              paramCalled['error'] = err;
+              continue;
+            }
+            Function fn;
+            var completer = Completer<String?>();
+            try {
+              fn = paramCallbacks[i++];
+              try {
+                fn(req, res, completer, paramVal, key);
+              } finally {
+                if (!completer.isCompleted) {
+                  completer.complete('finish');
+                }
+              }
+              err = await completer.future;
+              if (err == 'finish') {
+                continue;
+              }
+            } on RangeError {
+              break;
+            } catch (e) {
+              err = e.toString();
+            }
+          }
+        }
+      }
+
+      await processParams(layer, paramCalled, req, res, ([String? err]) async {
+        if (err != null && err.isNotEmpty) {
+          err = layerError != null && layerError.isNotEmpty ? layerError : err;
+        } else if (layer is HandleLayer) {
+          var next = Completer<String?>();
+          await layer.handleRequest(req, res, next);
+          err = await next.future;
+        } else {}
+      });
     }
   }
 
-  void _processParams(HttpRequest req, HttpResponse res, Function done) {
-    void paramCallback() {}
-    void param(String? err) {}
-  }
+  void trimPrefix(
+      Layer layer, String layerError, String layerPath, String path) {}
 }

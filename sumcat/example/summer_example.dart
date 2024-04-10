@@ -6,11 +6,11 @@ void main() {
   var router = Router();
   //请求
   router.get("/user/:id", [
-    (HttpRequestWrapper req, HttpResponseWrapper res, Completer<String?> next) {
+    (req, res, next) {
       res.inner.writeln("test1 completed");
       next.complete();
     },
-    (HttpRequestWrapper req, HttpResponseWrapper res, Completer<String?> next) {
+    (req, res, next) {
       res.inner.writeln("id is ${req.params['id']}");
       next.complete();
     }

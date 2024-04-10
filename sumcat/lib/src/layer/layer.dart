@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:sumcat/src/http/http.dart';
@@ -79,7 +80,7 @@ abstract class Layer {
       next.complete(err.toString());
     } finally {
       if (!next.isCompleted) {
-        next.complete("finish");
+        next.complete("err");
       }
     }
   }
@@ -94,8 +95,48 @@ abstract class Layer {
   }
 }
 
-class HandleLayer extends Layer {
-  HandleLayer(String path, Function fn) : super(path, fn);
+class RouteLayer extends Layer {
+  RouteLayer(String path, Function fn) : super(path, fn);
+}
+
+class HttpHandleLayer extends Layer {
+  HttpHandleLayer(String path, Function fn) : super(path, fn);
+}
+
+class WebSocketHandleLayer extends Layer {
+  WebSocketHandleLayer(String path, Function fn) : super(path, fn);
+
+  @override
+  Future<void> handleRequest(HttpRequestWrapper req, HttpResponseWrapper res,
+      Completer<String?> next) async {
+    try {
+      var websocket = await WebSocketTransformer.upgrade(req.inner);
+      await _fn(req, websocket);
+    } catch (err) {
+      if (!next.isCompleted) {
+        next.complete(err.toString());
+      }
+    } finally {
+      if (!next.isCompleted) {
+        next.complete("finish");
+      }
+    }
+  }
+
+  @override
+  Future<void> handleError(String? err, HttpRequestWrapper req,
+      HttpResponseWrapper res, Completer<String?> next) async {
+    try {
+      var websocket = WebSocketTransformer.upgrade(req.inner);
+      await _fn(err, req, websocket);
+    } catch (err) {
+      next.complete(err.toString());
+    } finally {
+      if (!next.isCompleted) {
+        next.complete("err");
+      }
+    }
+  }
 }
 
 class MiddlewareLayer extends Layer {

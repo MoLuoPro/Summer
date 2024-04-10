@@ -33,7 +33,7 @@ class Router implements HttpMethod {
 
   Route route(String path) {
     var route = Route(path);
-    var layer = HandleLayer(path, route.dispatch);
+    var layer = RouteLayer(path, route.dispatch);
     layer.route = route;
     _stack.add(layer);
     return route;
@@ -206,7 +206,7 @@ class Router implements HttpMethod {
       await processParams(layer, paramCalled, req, res, ([String? err]) async {
         if (err != null && err.isNotEmpty) {
           err = layerError != null && layerError.isNotEmpty ? layerError : err;
-        } else if (layer is HandleLayer) {
+        } else if (layer is RouteLayer) {
           var next = Completer<String?>();
           await layer.handleRequest(req, res, next);
           err = await next.future;

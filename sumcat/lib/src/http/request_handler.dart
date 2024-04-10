@@ -1,11 +1,12 @@
 part of http;
 
-mixin RequestHandler on Server implements HttpMethod {
+mixin RequestHandler on Server implements HttpMethod, WebSocketMethod {
   Future<void> _request(
       void Function(
               HttpRequestWrapper req,
               HttpResponseWrapper res,
-              void Function(HttpRequestWrapper, HttpResponseWrapper, String?)?
+              void Function(HttpRequestWrapper req, HttpResponseWrapper res,
+                      String? err)?
                   done)
           appHandle) async {
     await _listened.future;
@@ -19,7 +20,8 @@ mixin RequestHandler on Server implements HttpMethod {
       void Function(
               HttpRequestWrapper req,
               HttpResponseWrapper res,
-              void Function(HttpRequestWrapper, HttpResponseWrapper, String?)?
+              void Function(HttpRequestWrapper req, HttpResponseWrapper res,
+                      String? err)?
                   done)
           appHandle) {
     _request(appHandle);

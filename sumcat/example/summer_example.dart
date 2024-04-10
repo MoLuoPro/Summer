@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:sumcat/sumcat.dart';
 
 void main() {

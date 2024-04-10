@@ -34,7 +34,7 @@ class Route {
         return;
       }
 
-      if (layer.method != method) {
+      if (!_isWebSocket(layer, method) && layer.method != method) {
         continue;
       } else {
         var next = Completer<String?>();
@@ -47,9 +47,19 @@ class Route {
   }
 
   Route request(String method, Function callback) {
-    var layer = HandleLayer('/', callback);
+    Layer layer;
+    if (method == WebSocketMethod.webSocket) {
+      layer = WebSocketHandleLayer('/', callback);
+    } else {
+      layer = HttpHandleLayer('/', callback);
+    }
     layer.method = method;
     _stack.add(layer);
     return this;
+  }
+
+  bool _isWebSocket(Layer layer, String method) {
+    return method == HttpMethod.httpGet &&
+        layer.method == WebSocketMethod.webSocket;
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:sumcat/src/http/http.dart';
 import 'package:sumcat/src/router/router.dart';
@@ -60,9 +61,13 @@ class Application with Server, RequestHandler {
   void handle(
     HttpRequestWrapper req,
     HttpResponseWrapper res, [
-    void Function(HttpRequestWrapper, HttpResponseWrapper, String?)? done,
+    void Function(HttpRequestWrapper req, HttpResponseWrapper res, String? err)?
+        done,
   ]) {
-    var handler = done ?? finalHandler;
+    var handler = done ??
+        (WebSocketTransformer.isUpgradeRequest(req.inner)
+            ? webSocketFinalHandler
+            : httpFinalHandler);
     _lazyRouter();
     _router?.handle(req, res, handler);
   }
@@ -72,12 +77,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  HttpMethod get(
-      String path,
-      List<
-              void Function(HttpRequestWrapper req, HttpResponseWrapper res,
-                  Completer<String?> next)>
-          callbacks) {
+  HttpMethod get(String path, List<HttpHandler> callbacks) {
     _lazyRouter();
     var route = _router?.route(path);
     for (var cb in callbacks) {
@@ -87,12 +87,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  HttpMethod post(
-      String path,
-      List<
-              void Function(HttpRequestWrapper req, HttpResponseWrapper res,
-                  Completer<String?> next)>
-          callbacks) {
+  HttpMethod post(String path, List<HttpHandler> callbacks) {
     _lazyRouter();
     var route = _router?.route(path);
     for (var cb in callbacks) {
@@ -101,18 +96,23 @@ class Application with Server, RequestHandler {
     return this;
   }
 
-  HttpMethod all(
-      String path,
-      List<
-              void Function(HttpRequestWrapper req, HttpResponseWrapper res,
-                  Completer<String?> next)>
-          callbacks) {
+  HttpMethod all(String path, List<HttpHandler> callbacks) {
     _lazyRouter();
     for (var method in HttpMethod.methods) {
       var route = _router?.route(path);
       for (var cb in callbacks) {
         route?.request(method, cb);
       }
+    }
+    return this;
+  }
+
+  @override
+  WebSocketMethod ws(String path, List<WebSocketHandler> callbacks) {
+    _lazyRouter();
+    var route = _router?.route(path);
+    for (var cb in callbacks) {
+      route?.request(WebSocketMethod.webSocket, cb);
     }
     return this;
   }

@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:io';
 
 part './request_handler.dart';
-part './http_method.dart';
+part 'methods.dart';
 part './server.dart';
 part './final_handler.dart';
 
@@ -21,8 +21,11 @@ class HttpRequestWrapper {
 }
 
 class HttpRequestWrapperInternal extends HttpRequestWrapper {
+  WebSocket? _ws;
   HttpRequestWrapperInternal(HttpRequest inner) : super(inner);
   set baseUrl(value) => _baseUrl = value;
+  WebSocket? get ws => _ws;
+  set ws(WebSocket? value) => _ws = value;
 }
 
 class HttpResponseWrapper {

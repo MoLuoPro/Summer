@@ -228,8 +228,8 @@ class Router implements HttpMethod {
   HttpMethod get(
       String uri,
       List<
-              void Function(HttpRequestWrapper req, HttpResponseWrapper res,
-                  Completer<String?> next)>
+              FutureOr<void> Function(HttpRequestWrapper req,
+                  HttpResponseWrapper res, Completer<String?> next)>
           callbacks) {
     var route = this.route(uri);
     for (var callback in callbacks) {
@@ -242,8 +242,8 @@ class Router implements HttpMethod {
   HttpMethod post(
       String uri,
       List<
-              void Function(HttpRequestWrapper req, HttpResponseWrapper res,
-                  Completer<String?> next)>
+              FutureOr<void> Function(HttpRequestWrapper req,
+                  HttpResponseWrapper res, Completer<String?> next)>
           callbacks) {
     var route = this.route(uri);
     for (var callback in callbacks) {

@@ -1,11 +1,12 @@
 part of http;
 
-typedef HttpHandler = void Function(
+typedef HttpHandler = FutureOr<void> Function(
     HttpRequestWrapper req, HttpResponseWrapper res, Completer<String?> next);
-typedef WebSocketHandler = void Function(HttpRequestWrapper req, WebSocket ws);
-typedef HttpErrorHandler = void Function(String? err, HttpRequestWrapper req,
-    HttpResponseWrapper res, Completer<String?> next);
-typedef WebSocketErrorHandler = void Function(
+typedef WebSocketHandler = FutureOr<void> Function(
+    HttpRequestWrapper req, WebSocket ws);
+typedef HttpErrorHandler = FutureOr<void> Function(String? err,
+    HttpRequestWrapper req, HttpResponseWrapper res, Completer<String?> next);
+typedef WebSocketErrorHandler = FutureOr<void> Function(
     String? err, HttpRequestWrapper req, WebSocket ws);
 
 abstract class HttpMethod {

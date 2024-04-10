@@ -5,7 +5,8 @@ void main() {
   var router = Router();
   //请求
   router.get("/user/:id", [
-    (req, res, next) {
+    (req, res, next) async {
+      await Future.delayed(Duration(seconds: 1));
       res.inner.writeln("test1 completed");
       next.complete();
     },

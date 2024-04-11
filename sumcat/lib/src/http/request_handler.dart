@@ -2,7 +2,7 @@ part of http;
 
 mixin RequestHandler on Server implements HttpMethod, WebSocketMethod {
   Future<void> _request(
-      void Function(
+      FutureOr<void> Function(
               HttpRequestWrapper req,
               HttpResponseWrapper res,
               void Function(HttpRequestWrapper req, HttpResponseWrapper res,
@@ -10,14 +10,14 @@ mixin RequestHandler on Server implements HttpMethod, WebSocketMethod {
                   done)
           appHandle) async {
     await _listened.future;
-    server.forEach((req) async {
-      appHandle(HttpRequestWrapperInternal(req),
+    await for (HttpRequest req in _server) {
+      await appHandle(HttpRequestWrapperInternal(req),
           HttpResponseWrapperInternal(req.response), null);
-    });
+    }
   }
 
   HttpMethod request(
-      void Function(
+      FutureOr<void> Function(
               HttpRequestWrapper req,
               HttpResponseWrapper res,
               void Function(HttpRequestWrapper req, HttpResponseWrapper res,

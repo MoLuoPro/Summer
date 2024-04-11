@@ -8,16 +8,11 @@ import '../layer/layer.dart';
 
 part './route.dart';
 
-class Router implements HttpMethod {
+class Router implements HttpMethod, WebSocketMethod {
   final List<Layer> _stack = [];
   final Map<String, List<Function>> _params = {};
 
-  Router use(
-      {String path = '/',
-      required List<
-              void Function(
-                  HttpRequestWrapper, HttpResponseWrapper, Completer<String?>)>
-          fns}) {
+  Router use({String path = '/', required List<HttpHandler> fns}) {
     for (var fn in fns) {
       var layer = MiddlewareLayer(path, fn);
       _stack.add(layer);
@@ -97,8 +92,13 @@ class Router implements HttpMethod {
       }
 
       if (!match) {
-        done?.call(req, res, '');
         break;
+        // if (layer is RouterLayer) {
+        //   continue;
+        // } else {
+        //   done?.call(req, res, '');
+        //   break;
+        // }
       }
 
       req.params.addAll(layer!.param);
@@ -225,7 +225,7 @@ class Router implements HttpMethod {
   }
 
   @override
-  HttpMethod get(
+  Router get(
       String uri,
       List<
               FutureOr<void> Function(HttpRequestWrapper req,
@@ -239,7 +239,7 @@ class Router implements HttpMethod {
   }
 
   @override
-  HttpMethod post(
+  Router post(
       String uri,
       List<
               FutureOr<void> Function(HttpRequestWrapper req,
@@ -248,6 +248,15 @@ class Router implements HttpMethod {
     var route = this.route(uri);
     for (var callback in callbacks) {
       route.request(HttpMethod.httpPost, callback);
+    }
+    return this;
+  }
+
+  @override
+  Router ws(String uri, List<WebSocketHandler> callbacks) {
+    var route = this.route(uri);
+    for (var callback in callbacks) {
+      route.request(WebSocketMethod.webSocket, callback);
     }
     return this;
   }

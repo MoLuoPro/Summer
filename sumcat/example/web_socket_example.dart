@@ -2,7 +2,7 @@ import 'package:sumcat/sumcat.dart';
 
 void main() {
   var app = createApplication();
-  app.ws('/test', [
+  app.ws('/talk', [
     (req, ws) {
       ws.listen((event) {
         print(event);

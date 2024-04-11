@@ -62,6 +62,7 @@ abstract class Layer {
     try {
       await _fn(req, res, next);
     } catch (err) {
+      print(err);
       if (!next.isCompleted) {
         next.complete(err.toString());
       }
@@ -77,6 +78,7 @@ abstract class Layer {
     try {
       await _fn(err, req, res, next);
     } catch (err) {
+      print(err);
       next.complete(err.toString());
     } finally {
       if (!next.isCompleted) {
@@ -113,6 +115,7 @@ class WebSocketHandleLayer extends Layer {
       var websocket = await WebSocketTransformer.upgrade(req.inner);
       await _fn(req, websocket);
     } catch (err) {
+      print(err);
       if (!next.isCompleted) {
         next.complete(err.toString());
       }
@@ -130,6 +133,7 @@ class WebSocketHandleLayer extends Layer {
       var websocket = WebSocketTransformer.upgrade(req.inner);
       await _fn(err, req, websocket);
     } catch (err) {
+      print(err);
       next.complete(err.toString());
     } finally {
       if (!next.isCompleted) {

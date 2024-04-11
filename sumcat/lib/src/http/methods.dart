@@ -8,6 +8,9 @@ typedef HttpErrorHandler = FutureOr<void> Function(String? err,
     HttpRequestWrapper req, HttpResponseWrapper res, Completer<String?> next);
 typedef WebSocketErrorHandler = FutureOr<void> Function(
     String? err, HttpRequestWrapper req, WebSocket ws);
+typedef SocketHandler = FutureOr<void> Function(ServerSocket socket);
+typedef SocketErrorHandler = FutureOr<void> Function(
+    String? err, ServerSocket socket);
 
 abstract class HttpMethod {
   static const String httpAll = 'ALL';
@@ -20,6 +23,16 @@ abstract class HttpMethod {
 }
 
 abstract class WebSocketMethod {
-  static const String webSocket = 'webSocket';
+  static const String webSocket = 'WEB_SOCKET';
   WebSocketMethod ws(String uri, List<WebSocketHandler> callbacks);
+}
+
+abstract class TCPMethod {
+  static const String tcpMethod = 'TCP';
+  TCPMethod tcp(String uri, List<SocketHandler> callbacks);
+}
+
+abstract class UDPMethod {
+  static const String udpMethod = 'UDP';
+  TCPMethod udp(String uri, List<SocketHandler> callbacks);
 }

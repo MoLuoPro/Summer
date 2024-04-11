@@ -19,12 +19,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
-  Application use(
-      {String path = '/',
-      required List<
-              void Function(
-                  HttpRequestWrapper, HttpResponseWrapper, Completer<String?>)>
-          fns}) {
+  Application use({String path = '/', required List<HttpHandler> fns}) {
     _lazyRouter();
     _router?.use(path: path, fns: fns);
     return this;
@@ -38,8 +33,8 @@ class Application with Server, RequestHandler {
 
   Application params(
       List<String> names,
-      void Function(HttpRequestWrapper, HttpResponseWrapper, Completer<String?>,
-              dynamic, String name)
+      void Function(HttpRequestWrapper req, HttpResponseWrapper res,
+              Completer<String?> next, dynamic, String name)
           fn) {
     _lazyRouter();
     for (var name in names) {
@@ -50,26 +45,26 @@ class Application with Server, RequestHandler {
 
   Application param(
       String name,
-      void Function(HttpRequestWrapper, HttpResponseWrapper, Completer<String?>,
-              dynamic, String name)
+      void Function(HttpRequestWrapper req, HttpResponseWrapper res,
+              Completer<String?> next, dynamic, String name)
           fn) {
     _lazyRouter();
     _router?.param(name, fn);
     return this;
   }
 
-  void handle(
+  FutureOr<void> handle(
     HttpRequestWrapper req,
     HttpResponseWrapper res, [
     void Function(HttpRequestWrapper req, HttpResponseWrapper res, String? err)?
         done,
-  ]) {
+  ]) async {
     var handler = done ??
         (WebSocketTransformer.isUpgradeRequest(req.inner)
             ? webSocketFinalHandler
             : httpFinalHandler);
     _lazyRouter();
-    _router?.handle(req, res, handler);
+    await _router?.handle(req, res, handler);
   }
 
   void _lazyRouter() {
@@ -77,7 +72,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  HttpMethod get(String path, List<HttpHandler> callbacks) {
+  RequestHandler get(String path, List<HttpHandler> callbacks) {
     _lazyRouter();
     var route = _router?.route(path);
     for (var cb in callbacks) {
@@ -87,7 +82,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  HttpMethod post(String path, List<HttpHandler> callbacks) {
+  RequestHandler post(String path, List<HttpHandler> callbacks) {
     _lazyRouter();
     var route = _router?.route(path);
     for (var cb in callbacks) {
@@ -96,7 +91,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
-  HttpMethod all(String path, List<HttpHandler> callbacks) {
+  RequestHandler all(String path, List<HttpHandler> callbacks) {
     _lazyRouter();
     for (var method in HttpMethod.methods) {
       var route = _router?.route(path);
@@ -108,7 +103,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  WebSocketMethod ws(String path, List<WebSocketHandler> callbacks) {
+  RequestHandler ws(String path, List<WebSocketHandler> callbacks) {
     _lazyRouter();
     var route = _router?.route(path);
     for (var cb in callbacks) {
@@ -116,6 +111,26 @@ class Application with Server, RequestHandler {
     }
     return this;
   }
+
+  // @override
+  // RequestHandler tcp(String path, List<SocketHandler> callbacks) {
+  //   _lazyRouter();
+  //   var route = _router?.route(path);
+  //   for (var cb in callbacks) {
+  //     route?.request(TCPMethod.tcpMethod, cb);
+  //   }
+  //   return this;
+  // }
+
+  // @override
+  // RequestHandler udp(String path, List<SocketHandler> callbacks) {
+  //   _lazyRouter();
+  //   var route = _router?.route(path);
+  //   for (var cb in callbacks) {
+  //     route?.request(UDPMethod.udpMethod, cb);
+  //   }
+  //   return this;
+  // }
 }
 
 Application createApplication() {

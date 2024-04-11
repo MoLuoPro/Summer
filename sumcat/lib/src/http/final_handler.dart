@@ -3,7 +3,7 @@ part of http;
 Future<void> httpFinalHandler(
     HttpRequestWrapper req, HttpResponseWrapper res, String? err) async {
   var code = res._inner.statusCode;
-  if (code > 400) {
+  if (code >= 400) {
     res.inner.writeln('status code: $code');
     res.inner.writeln('err: $err');
   }

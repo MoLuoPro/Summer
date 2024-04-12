@@ -62,7 +62,7 @@ class HttpRouter extends Router implements HttpMethod {
     String? layerError;
     var idx = 0;
     String removed = '';
-    String parentPath = req.baseUrl;
+    String parentPath = (req as HttpRequestWrapperInternal).baseUrl;
     Map<String, Map<String, dynamic>> paramCalled = {};
 
     while (true) {
@@ -226,7 +226,8 @@ class HttpRouter extends Router implements HttpMethod {
   String getPathName(HttpRequestWrapper req, String layerPath) {
     return layerPath == '/'
         ? req.inner.uri.path
-        : req.inner.uri.path.substring(req.baseUrl.length);
+        : req.inner.uri.path
+            .substring((req as HttpRequestWrapperInternal).baseUrl.length);
   }
 
   @override
@@ -349,7 +350,7 @@ class WebSocketRouter extends Router implements WebSocketMethod {
     String? layerError;
     var idx = 0;
     String removed = '';
-    String parentPath = req.baseUrl;
+    String parentPath = (req as HttpRequestWrapperInternal).baseUrl;
     Map<String, Map<String, dynamic>> paramCalled = {};
 
     while (true) {
@@ -513,7 +514,8 @@ class WebSocketRouter extends Router implements WebSocketMethod {
   String getPathName(HttpRequestWrapper req, String layerPath) {
     return layerPath == '/'
         ? req.inner.uri.path
-        : req.inner.uri.path.substring(req.baseUrl.length);
+        : req.inner.uri.path
+            .substring((req as HttpRequestWrapperInternal).baseUrl.length);
   }
 
   @override

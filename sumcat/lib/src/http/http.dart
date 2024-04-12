@@ -18,12 +18,12 @@ class HttpRequestWrapper {
 
   HttpRequest get inner => _inner;
   Map<String, dynamic> get params => _params;
-  String get baseUrl => _baseUrl;
 }
 
 class HttpRequestWrapperInternal extends HttpRequestWrapper {
   WebSocket? _ws;
   HttpRequestWrapperInternal(HttpRequest inner) : super(inner);
+  String get baseUrl => _baseUrl;
   set baseUrl(value) => _baseUrl = value;
   WebSocket? get ws => _ws;
   set ws(WebSocket? value) => _ws = value;

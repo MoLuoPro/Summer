@@ -12,6 +12,7 @@ WebSocketRouter _init() {
       sockets.add(ws);
       ws.listen((event) {
         for (var socket in sockets) {
+          print(event);
           socket.add(event);
         }
       });

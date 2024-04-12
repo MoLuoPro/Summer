@@ -8,6 +8,7 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
+  path: ^1.9.0
   path_to_regexp: ^0.4.0
   # path: ^1.8.0
 

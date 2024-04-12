@@ -2,8 +2,7 @@ part of http;
 
 mixin RequestHandler on Server
     implements HttpMethod, WebSocketMethod, TCPMethod, UDPMethod {
-  RequestHandler request(
-      HttpRequestHandle httpHandle, WebSocketRequestHandle wsHandle) {
+  void request(HttpRequestHandle httpHandle, WebSocketRequestHandle wsHandle) {
     request() async {
       await _listened.future;
       await for (HttpRequest req in _server!) {
@@ -18,10 +17,9 @@ mixin RequestHandler on Server
     }
 
     request();
-    return this;
   }
 
-  TCPMethod tcpRequest(
+  void tcpRequest(
       FutureOr<void> Function(
               Socket client, void Function(Socket client, String? err)? done)
           appHandle) {
@@ -35,10 +33,9 @@ mixin RequestHandler on Server
     }
 
     tcpRequest();
-    return this;
   }
 
-  UDPMethod udpRequest(
+  void udpRequest(
       FutureOr<void> Function(RawDatagramSocket socket,
               void Function(RawDatagramSocket socket, String? err)? done)
           appHandle) {
@@ -50,6 +47,5 @@ mixin RequestHandler on Server
     }
 
     udpRequest();
-    return this;
   }
 }

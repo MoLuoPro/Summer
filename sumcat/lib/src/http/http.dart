@@ -1,7 +1,6 @@
 library http;
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 part './request_handler.dart';

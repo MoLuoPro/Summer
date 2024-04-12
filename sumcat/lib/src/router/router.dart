@@ -256,6 +256,51 @@ class HttpRouter extends Router implements HttpMethod {
     }
     return this;
   }
+
+  @override
+  HttpMethod delete(String uri, List<HttpHandler> callbacks) {
+    var route = this.route(uri);
+    for (var callback in callbacks) {
+      route.request(HttpMethod.httpDelete, callback);
+    }
+    return this;
+  }
+
+  @override
+  HttpMethod head(String uri, List<HttpHandler> callbacks) {
+    var route = this.route(uri);
+    for (var callback in callbacks) {
+      route.request(HttpMethod.httpHead, callback);
+    }
+    return this;
+  }
+
+  @override
+  HttpMethod options(String uri, List<HttpHandler> callbacks) {
+    var route = this.route(uri);
+    for (var callback in callbacks) {
+      route.request(HttpMethod.httpOptions, callback);
+    }
+    return this;
+  }
+
+  @override
+  HttpMethod patch(String uri, List<HttpHandler> callbacks) {
+    var route = this.route(uri);
+    for (var callback in callbacks) {
+      route.request(HttpMethod.httpPatch, callback);
+    }
+    return this;
+  }
+
+  @override
+  HttpMethod put(String uri, List<HttpHandler> callbacks) {
+    var route = this.route(uri);
+    for (var callback in callbacks) {
+      route.request(HttpMethod.httpPut, callback);
+    }
+    return this;
+  }
 }
 
 class WebSocketRouter extends Router implements WebSocketMethod {

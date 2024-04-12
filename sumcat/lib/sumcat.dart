@@ -12,6 +12,7 @@ export 'src/http/http.dart'
         WebSocketMethod,
         TCPMethod,
         UDPMethod;
-export 'src/router/router.dart' show Router, WebSocketRouter, HttpRouter;
+export 'src/router/router.dart'
+    show Router, WebSocketRouter, HttpRouter, TCPRouter, UDPRouter;
 
 // TODO: Export any libraries intended for clients of this package.

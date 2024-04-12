@@ -12,10 +12,13 @@ Future<void> httpFinalHandler(
 
 Future<void> webSocketFinalHandler(
     HttpRequestWrapper req, WebSocket ws, String? err) async {
-  // var internalReq = req as HttpRequestWrapperInternal;
-  // var code = res._inner.statusCode;
-  // var _httpRequest = (req as HttpRequestWrapperInternal);
-  // await _httpRequest.ws?.close();
+  var res = req.inner.response;
+  var code = res.statusCode;
+  if (code >= 400) {
+    res.writeln('status code: $code');
+    res.writeln('err: $err');
+    await res.close();
+  }
 }
 
 FutureOr<void> tcpFinalHandler(Socket client, String? err) {}

@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:sumcat/sumcat.dart';
 
-Router login = _init();
+HttpRouter login = _init();
 
-Router _init() {
-  login = Router();
+HttpRouter _init() {
+  login = HttpRouter();
   login.post('/login', [
     (req, res, next) async {
       var json = await utf8.decoder.bind(req.inner).join();

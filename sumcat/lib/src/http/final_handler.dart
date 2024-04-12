@@ -11,9 +11,13 @@ Future<void> httpFinalHandler(
 }
 
 Future<void> webSocketFinalHandler(
-    HttpRequestWrapper req, HttpResponseWrapper res, String? err) async {
-  var internalReq = req as HttpRequestWrapperInternal;
-  var code = res._inner.statusCode;
+    HttpRequestWrapper req, WebSocket ws, String? err) async {
+  // var internalReq = req as HttpRequestWrapperInternal;
+  // var code = res._inner.statusCode;
   // var _httpRequest = (req as HttpRequestWrapperInternal);
   // await _httpRequest.ws?.close();
 }
+
+FutureOr<void> tcpFinalHandler(Socket client, String? err) {}
+
+FutureOr<void> udpFinalHandler(RawDatagramSocket client, String? err) {}

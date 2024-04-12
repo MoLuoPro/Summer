@@ -1,12 +1,14 @@
 library http;
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 part './request_handler.dart';
-part 'methods.dart';
+part './methods.dart';
 part './server.dart';
 part './final_handler.dart';
+part './error/error.dart';
 
 class HttpRequestWrapper {
   final Map<String, dynamic> _params = {};

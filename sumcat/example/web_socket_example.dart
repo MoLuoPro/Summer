@@ -3,11 +3,11 @@ import 'package:sumcat/sumcat.dart';
 void main() {
   var app = createApplication();
   app.ws('/talk', [
-    (req, ws) {
+    (req, ws, next) {
       ws.listen((event) {
         print(event);
       });
     }
   ]);
-  app.listen(4000);
+  app.listen(httpPort: 4000);
 }

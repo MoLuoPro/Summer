@@ -1,30 +1,55 @@
 part of http;
 
-mixin RequestHandler on Server implements HttpMethod, WebSocketMethod {
-  Future<void> _request(
-      FutureOr<void> Function(
-              HttpRequestWrapper req,
-              HttpResponseWrapper res,
-              void Function(HttpRequestWrapper req, HttpResponseWrapper res,
-                      String? err)?
-                  done)
-          appHandle) async {
-    await _listened.future;
-    await for (HttpRequest req in _server) {
-      await appHandle(HttpRequestWrapperInternal(req),
-          HttpResponseWrapperInternal(req.response), null);
+mixin RequestHandler on Server
+    implements HttpMethod, WebSocketMethod, TCPMethod, UDPMethod {
+  RequestHandler request(
+      HttpRequestHandle httpHandle, WebSocketRequestHandle wsHandle) {
+    request() async {
+      await _listened.future;
+      await for (HttpRequest req in _server!) {
+        if (WebSocketTransformer.isUpgradeRequest(req)) {
+          var socket = await WebSocketTransformer.upgrade(req);
+          await wsHandle(HttpRequestWrapper(req), socket, null);
+        } else {
+          await httpHandle(HttpRequestWrapperInternal(req),
+              HttpResponseWrapperInternal(req.response), null);
+        }
+      }
     }
+
+    request();
+    return this;
   }
 
-  HttpMethod request(
+  TCPMethod tcpRequest(
       FutureOr<void> Function(
-              HttpRequestWrapper req,
-              HttpResponseWrapper res,
-              void Function(HttpRequestWrapper req, HttpResponseWrapper res,
-                      String? err)?
-                  done)
+              Socket client, void Function(Socket client, String? err)? done)
           appHandle) {
-    _request(appHandle);
+    tcpRequest() async {
+      await _listened.future;
+      if (_tcp != null) {
+        await for (var client in _tcp!) {
+          await appHandle(client, null);
+        }
+      }
+    }
+
+    tcpRequest();
+    return this;
+  }
+
+  UDPMethod udpRequest(
+      FutureOr<void> Function(RawDatagramSocket socket,
+              void Function(RawDatagramSocket socket, String? err)? done)
+          appHandle) {
+    udpRequest() async {
+      await _listened.future;
+      if (_udp != null) {
+        await appHandle(_udp!, null);
+      }
+    }
+
+    udpRequest();
     return this;
   }
 }

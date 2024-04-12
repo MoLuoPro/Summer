@@ -8,7 +8,7 @@ late Application app;
 void main() {
   app = createApplication();
   app
-    ..useRouter(router: chat)
-    ..useRouter(router: login);
-  app.listen(4000);
+    ..useWebSocketRouter(router: chat)
+    ..useHttpRouter(router: login);
+  app.listen(httpPort: 4000);
 }

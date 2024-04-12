@@ -2,7 +2,7 @@ import 'package:sumcat/sumcat.dart';
 
 void main() {
   var app = createApplication();
-  var router = Router();
+  var router = HttpRouter();
   //请求
   router.get("/user/:id", [
     (req, res, next) async {
@@ -29,6 +29,6 @@ void main() {
     next.complete();
   });
   //路由器
-  app.useRouter(path: '/dart', router: router);
-  app.listen(4000);
+  app.useHttpRouter(path: '/dart', router: router);
+  app.listen(httpPort: 4000);
 }

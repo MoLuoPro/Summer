@@ -12,10 +12,9 @@ HttpRouter _init() {
       Map data = jsonDecode(json);
       try {
         Map user = data['_value'];
-        res.inner.write(
-            user['username'] == 'dart' && user['password'] == '123456'
-                ? user
-                : null);
+        json = jsonEncode(user);
+        print(json);
+        res.inner.write(json);
       } catch (err) {
         res.inner.write(false);
       }
@@ -23,5 +22,3 @@ HttpRouter _init() {
   ]);
   return login;
 }
-
-Map user = {'username': 'dart', 'password': '123456'};

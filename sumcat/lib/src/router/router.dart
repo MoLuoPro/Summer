@@ -273,7 +273,7 @@ class WebSocketRouter extends Router implements WebSocketMethod {
 
   @override
   WebSocketRouter useRouter({String path = '/', required Router router}) {
-    var layer = WebSocketRouterLayer(path, (router as HttpRouter).handle);
+    var layer = WebSocketRouterLayer(path, (router as WebSocketRouter).handle);
     _stack.add(layer);
     return this;
   }
@@ -627,7 +627,7 @@ class UDPRouter extends Router {
 
   @override
   Router useRouter({String path = '/', required Router router}) {
-    var layer = UDPRouterLayer(path, (router as TCPRouterLayer).handle);
+    var layer = UDPRouterLayer(path, (router as UDPRouterLayer).handle);
     _stack.add(layer);
     return this;
   }

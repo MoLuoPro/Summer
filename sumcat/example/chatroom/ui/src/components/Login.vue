@@ -12,6 +12,7 @@ const user = ref({
 function submit() {
     axios.post('/api/login', user).then(res => {
         emit('login', res.data);
+        sessionStorage.setItem('user', JSON.stringify(res.data));
     });
 }
 </script>

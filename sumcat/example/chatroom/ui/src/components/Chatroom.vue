@@ -7,12 +7,12 @@ const socket = new WebSocket('ws://localhost:4000/chat');
 
 onMounted(() => {
     socket.onmessage = (event) => {
-        allText.value.push(event.data);
+        allText.value.push(JSON.parse(event.data));
     };
 });
 
 function send(){
-    socket.send(sendText.value);
+    socket.send(JSON.stringify({user: sessionStorage.getItem('user'), text: sendText.value}));
 }
 </script>
 
@@ -21,8 +21,8 @@ function send(){
     <el-main>
         <div class="panel">
             <el-scrollbar height="400">
-                <div v-for="(text, i) in allText" :key="i">
-                    <div>{{ text }}</div>
+                <div v-for="(data, i) in allText" :key="i">
+                    <div>{{ JSON.parse(data.user).username }}: {{ data.text }}</div>
                 </div>
             </el-scrollbar>
             <div class="input-panel">

@@ -11,7 +11,7 @@ part './route.dart';
 
 abstract class Router {
   final List<Layer> _stack = [];
-  Router use({String path = '/', required List fns});
+  Router use({String path = '/', required List<Function> fns});
   Router useRouter({String path = '/', required Router router});
   Route route(String path);
   Future<void> handle(List params, Function? done);
@@ -21,7 +21,7 @@ class HttpRouter extends Router implements HttpMethod {
   final Map<String, List<Function>> _params = {};
 
   @override
-  HttpRouter use({String path = '/', required List fns}) {
+  HttpRouter use({String path = '/', required List<Function> fns}) {
     for (var fn in fns) {
       var layer = HttpMiddlewareLayer(path, fn);
       _stack.add(layer);
@@ -591,7 +591,7 @@ class TCPRouter extends Router {
   }
 
   @override
-  Router use({String path = '/', required List fns}) {
+  Router use({String path = '/', required List<Function> fns}) {
     // TODO: implement use
     throw UnimplementedError();
   }
@@ -667,7 +667,7 @@ class UDPRouter extends Router {
   }
 
   @override
-  Router use({String path = '/', required List fns}) {
+  Router use({String path = '/', required List<Function> fns}) {
     // TODO: implement use
     throw UnimplementedError();
   }

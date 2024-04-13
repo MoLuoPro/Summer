@@ -1,7 +1,7 @@
 import 'package:sumcat/sumcat.dart';
 
 void main() {
-  var app = createApplication();
+  var app = createApp();
   var router = HttpRouter();
   //请求
   router.get("/user/:id", [

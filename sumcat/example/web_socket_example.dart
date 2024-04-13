@@ -1,7 +1,7 @@
 import 'package:sumcat/sumcat.dart';
 
 void main() {
-  var app = createApplication();
+  var app = createApp();
   app.ws('/talk', [
     (req, ws, next) {
       ws.listen((event) {

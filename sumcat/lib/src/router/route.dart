@@ -18,6 +18,11 @@ abstract class Route {
     switch (method) {
       case HttpMethod.httpPost:
       case HttpMethod.httpGet:
+      case HttpMethod.httpHead:
+      case HttpMethod.httpOptions:
+      case HttpMethod.httpPatch:
+      case HttpMethod.httpPut:
+      case HttpMethod.httpDelete:
         layer = HttpHandleLayer('/', callback);
         break;
       case WebSocketMethod.name:

@@ -309,6 +309,6 @@ class Application with Server, RequestHandler {
   }
 }
 
-Application createApplication() {
+Application createApp() {
   return Application();
 }

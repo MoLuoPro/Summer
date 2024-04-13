@@ -6,7 +6,7 @@ import './login.dart';
 late Application app;
 
 void main() {
-  app = createApplication();
+  app = createApp();
   app
     ..useWebSocketRouter(router: chat)
     ..useHttpRouter(router: login);

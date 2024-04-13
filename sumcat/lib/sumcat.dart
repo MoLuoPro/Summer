@@ -3,7 +3,7 @@
 /// More dartdocs go here.
 library sumcat;
 
-export 'src/application.dart' show Application, createApplication;
+export 'src/application.dart' show Application, createApp;
 export 'src/http/http.dart'
     show
         HttpRequestWrapper,

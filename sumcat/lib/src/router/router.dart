@@ -231,12 +231,7 @@ class HttpRouter extends Router implements HttpMethod {
   }
 
   @override
-  HttpRouter get(
-      String uri,
-      List<
-              FutureOr<void> Function(HttpRequestWrapper req,
-                  HttpResponseWrapper res, Completer<String?> next)>
-          callbacks) {
+  HttpRouter get(String uri, List<Function> callbacks) {
     var route = this.route(uri);
     for (var callback in callbacks) {
       route.request(HttpMethod.httpGet, callback);
@@ -245,12 +240,7 @@ class HttpRouter extends Router implements HttpMethod {
   }
 
   @override
-  HttpRouter post(
-      String uri,
-      List<
-              FutureOr<void> Function(HttpRequestWrapper req,
-                  HttpResponseWrapper res, Completer<String?> next)>
-          callbacks) {
+  HttpRouter post(String uri, List<Function> callbacks) {
     var route = this.route(uri);
     for (var callback in callbacks) {
       route.request(HttpMethod.httpPost, callback);
@@ -259,7 +249,7 @@ class HttpRouter extends Router implements HttpMethod {
   }
 
   @override
-  HttpMethod delete(String uri, List<HttpHandler> callbacks) {
+  HttpMethod delete(String uri, List<Function> callbacks) {
     var route = this.route(uri);
     for (var callback in callbacks) {
       route.request(HttpMethod.httpDelete, callback);
@@ -268,7 +258,7 @@ class HttpRouter extends Router implements HttpMethod {
   }
 
   @override
-  HttpMethod head(String uri, List<HttpHandler> callbacks) {
+  HttpMethod head(String uri, List<Function> callbacks) {
     var route = this.route(uri);
     for (var callback in callbacks) {
       route.request(HttpMethod.httpHead, callback);
@@ -277,7 +267,7 @@ class HttpRouter extends Router implements HttpMethod {
   }
 
   @override
-  HttpMethod options(String uri, List<HttpHandler> callbacks) {
+  HttpMethod options(String uri, List<Function> callbacks) {
     var route = this.route(uri);
     for (var callback in callbacks) {
       route.request(HttpMethod.httpOptions, callback);
@@ -286,7 +276,7 @@ class HttpRouter extends Router implements HttpMethod {
   }
 
   @override
-  HttpMethod patch(String uri, List<HttpHandler> callbacks) {
+  HttpMethod patch(String uri, List<Function> callbacks) {
     var route = this.route(uri);
     for (var callback in callbacks) {
       route.request(HttpMethod.httpPatch, callback);
@@ -295,7 +285,7 @@ class HttpRouter extends Router implements HttpMethod {
   }
 
   @override
-  HttpMethod put(String uri, List<HttpHandler> callbacks) {
+  HttpMethod put(String uri, List<Function> callbacks) {
     var route = this.route(uri);
     for (var callback in callbacks) {
       route.request(HttpMethod.httpPut, callback);
@@ -369,7 +359,7 @@ class WebSocketRouter extends Router implements WebSocketMethod {
 
       var match = false;
       if (removed.isNotEmpty) {
-        (req as HttpRequestWrapperInternal).baseUrl = parentPath;
+        req.baseUrl = parentPath;
         removed = '';
       }
 
@@ -482,7 +472,7 @@ class WebSocketRouter extends Router implements WebSocketMethod {
             return;
           }
 
-          removed = (req as HttpRequestWrapperInternal).baseUrl += layerPath;
+          removed = (req).baseUrl += layerPath;
         }
         var next = Completer<String?>();
         if (layer is RouterLayer) {
@@ -519,7 +509,7 @@ class WebSocketRouter extends Router implements WebSocketMethod {
   }
 
   @override
-  WebSocketRouter ws(String uri, List<WebSocketHandler> callbacks) {
+  WebSocketRouter ws(String uri, List<Function> callbacks) {
     var route = this.route(uri);
     for (var callback in callbacks) {
       route.request(WebSocketMethod.name, callback);

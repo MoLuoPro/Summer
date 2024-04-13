@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:mirrors';
 
 import 'package:path_to_regexp/path_to_regexp.dart';
+import 'package:sumcat/src/http/http.dart';
 
 import '../router/router.dart';
 
@@ -76,6 +78,16 @@ class RouteLayer extends HandleLayer {
   Future<void> _handleRequest(List params, Completer<String?> next) async {
     await _fn([...params], next);
   }
+
+  @override
+  bool _requestCondition() {
+    return true;
+  }
+
+  @override
+  bool _errorCondition() {
+    return true;
+  }
 }
 
 class HttpRouteLayer extends RouteLayer {
@@ -97,6 +109,9 @@ class UDPRouteLayer extends RouteLayer {
 abstract class HandleLayer extends Layer {
   HandleLayer(String path, Function fn) : super(path, fn);
 
+  bool _requestCondition();
+  bool _errorCondition();
+
   Future<void> _handleError(List params, Completer<String?> next);
 
   Future<void> _handleRequest(List params, Completer<String?> next);
@@ -104,13 +119,13 @@ abstract class HandleLayer extends Layer {
   Future<void> handleRequest(
       List<dynamic> params, Completer<String?> next) async {
     try {
-      await _handleRequest(params, next);
+      _requestCondition()
+          ? await _handleRequest(params, next)
+          : next.complete();
     } catch (err) {
+      print(err);
       if (err is Error) {
-        print(err);
         print(err.stackTrace);
-      } else {
-        print(err);
       }
       if (!next.isCompleted) {
         next.complete(err.toString());
@@ -125,7 +140,9 @@ abstract class HandleLayer extends Layer {
   Future<void> handleError(
       List<dynamic> params, Completer<String?> next) async {
     try {
-      // await _handleError(err, req, res, next);
+      _errorCondition()
+          ? await _handleError(params, next)
+          : next.complete(params[0]);
       await _handleError(params, next);
     } catch (err) {
       if (err is Error) {
@@ -154,6 +171,16 @@ class HttpHandleLayer extends HandleLayer {
   Future<void> _handleRequest(List params, Completer<String?> next) async {
     await _fn(params[0], params[1], next);
   }
+
+  @override
+  bool _requestCondition() {
+    return _fn is HttpRequestHandle;
+  }
+
+  @override
+  bool _errorCondition() {
+    return _fn is HttpErrorHandler;
+  }
 }
 
 class WebSocketHandleLayer extends HandleLayer {
@@ -167,6 +194,16 @@ class WebSocketHandleLayer extends HandleLayer {
   @override
   Future<void> _handleRequest(List params, Completer<String?> next) async {
     await _fn(params[0], params[1], next);
+  }
+
+  @override
+  bool _requestCondition() {
+    return _fn.runtimeType is WebSocketRequestHandle;
+  }
+
+  @override
+  bool _errorCondition() {
+    return _fn.runtimeType is WebSocketErrorHandler;
   }
 }
 
@@ -182,6 +219,16 @@ class TCPHandleLayer extends HandleLayer {
   Future<void> _handleRequest(List params, Completer<String?> next) async {
     await _fn(params[0], next);
   }
+
+  @override
+  bool _errorCondition() {
+    return _fn.runtimeType is TCPSocketHandler;
+  }
+
+  @override
+  bool _requestCondition() {
+    return _fn.runtimeType is TCPSocketErrorHandler;
+  }
 }
 
 class UDPHandleLayer extends HandleLayer {
@@ -196,6 +243,16 @@ class UDPHandleLayer extends HandleLayer {
   Future<void> _handleRequest(List params, Completer<String?> next) async {
     await _fn(params[0], next);
   }
+
+  @override
+  bool _errorCondition() {
+    return _fn.runtimeType is UDPSocketHandler;
+  }
+
+  @override
+  bool _requestCondition() {
+    return _fn.runtimeType is UDPSocketErrorHandler;
+  }
 }
 
 class HttpMiddlewareLayer extends HandleLayer {
@@ -209,6 +266,16 @@ class HttpMiddlewareLayer extends HandleLayer {
   @override
   Future<void> _handleRequest(List params, Completer<String?> next) async {
     await _fn(params[0], params[1], next);
+  }
+
+  @override
+  bool _errorCondition() {
+    return _fn.runtimeType is HttpHandler;
+  }
+
+  @override
+  bool _requestCondition() {
+    return _fn.runtimeType is HttpErrorHandler;
   }
 }
 

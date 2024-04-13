@@ -156,7 +156,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  RequestHandler get(String path, List<HttpHandler> callbacks) {
+  RequestHandler get(String path, List<Function> callbacks) {
     void get() async {
       await _lazyRouter();
       var route = _httpRouter?.route(path);
@@ -170,7 +170,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  RequestHandler post(String path, List<HttpHandler> callbacks) {
+  RequestHandler post(String path, List<Function> callbacks) {
     void post() async {
       await _lazyRouter();
       var route = _httpRouter?.route(path);
@@ -184,7 +184,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  RequestHandler delete(String path, List<HttpHandler> callbacks) {
+  RequestHandler delete(String path, List<Function> callbacks) {
     void delete() async {
       await _lazyRouter();
       var route = _httpRouter?.route(path);
@@ -198,7 +198,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  HttpMethod head(String path, List<HttpHandler> callbacks) {
+  HttpMethod head(String path, List<Function> callbacks) {
     void head() async {
       await _lazyRouter();
       var route = _httpRouter?.route(path);
@@ -212,7 +212,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  HttpMethod options(String path, List<HttpHandler> callbacks) {
+  HttpMethod options(String path, List<Function> callbacks) {
     void options() async {
       await _lazyRouter();
       var route = _httpRouter?.route(path);
@@ -226,7 +226,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  HttpMethod patch(String path, List<HttpHandler> callbacks) {
+  HttpMethod patch(String path, List<Function> callbacks) {
     void patch() async {
       await _lazyRouter();
       var route = _httpRouter?.route(path);
@@ -240,7 +240,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  HttpMethod put(String path, List<HttpHandler> callbacks) {
+  HttpMethod put(String path, List<Function> callbacks) {
     void put() async {
       await _lazyRouter();
       var route = _httpRouter?.route(path);
@@ -253,7 +253,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
-  RequestHandler all(String path, List<HttpHandler> callbacks) {
+  RequestHandler all(String path, List<Function> callbacks) {
     void all() async {
       await _lazyRouter();
       for (var method in HttpMethod.methods) {
@@ -269,7 +269,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  WebSocketMethod ws(String path, List<WebSocketHandler> callbacks) {
+  WebSocketMethod ws(String path, List<Function> callbacks) {
     void ws() async {
       await _lazyRouter();
       var route = _webSocketRouter?.route(path);
@@ -283,7 +283,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  void tcp(List<TCPSocketHandler> callbacks) {
+  void tcp(List<Function> callbacks) {
     void tcp() async {
       await _lazyRouter();
       var route = _tcpRouter?.route('/');
@@ -296,7 +296,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  void udp(List<UDPSocketHandler> callbacks) {
+  void udp(List<Function> callbacks) {
     udp() async {
       await _lazyRouter();
       var route = _udpRouter?.route('');

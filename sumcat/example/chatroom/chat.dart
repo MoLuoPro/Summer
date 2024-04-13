@@ -5,7 +5,7 @@ import 'package:sumcat/sumcat.dart';
 WebSocketRouter chat = _init();
 
 WebSocketRouter _init() {
-  chat = WebSocketRouter();
+  chat = webSocketRouter();
   Set<WebSocket> sockets = {};
   chat.ws('/chat', [
     (req, ws, next) {

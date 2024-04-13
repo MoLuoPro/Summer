@@ -144,14 +144,14 @@ class Application with Server, RequestHandler {
 
   Future<void> _lazyRouter() async {
     if (await isHttpServerConnected()) {
-      _httpRouter ??= HttpRouter();
-      _webSocketRouter ??= WebSocketRouter();
+      _httpRouter ??= HttpRouterInternal();
+      _webSocketRouter ??= WebSocketRouterInternal();
     }
     if (await isTCPServerConnected()) {
-      _tcpRouter ??= TCPRouter();
+      _tcpRouter ??= TCPRouterInternal();
     }
     if (await isUDPServerConnected()) {
-      _udpRouter ??= UDPRouter();
+      _udpRouter ??= UDPRouterInternal();
     }
   }
 

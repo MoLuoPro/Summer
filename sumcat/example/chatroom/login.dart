@@ -5,7 +5,7 @@ import 'package:sumcat/sumcat.dart';
 HttpRouter login = _init();
 
 HttpRouter _init() {
-  login = HttpRouter();
+  login = httpRouter();
   login.post('/login', [
     (req, res, next) async {
       var json = await utf8.decoder.bind(req.inner).join();

@@ -21,7 +21,16 @@ export 'src/http/http.dart'
         UDPSocketHandler,
         UDPSocketErrorHandler;
 export 'src/router/router.dart'
-    show Router, WebSocketRouter, HttpRouter, TCPRouter, UDPRouter;
+    show
+        Router,
+        WebSocketRouter,
+        HttpRouter,
+        TCPRouter,
+        UDPRouter,
+        httpRouter,
+        webSocketRouter,
+        tcpRouter,
+        udpRouter;
 export 'src/middleware/serve_static.dart';
 
 // TODO: Export any libraries intended for clients of this package.

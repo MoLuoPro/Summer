@@ -22,7 +22,7 @@ abstract class Router {
   Future<void> handle(List params, Function? done);
 }
 
-class HttpRouter extends Router implements HttpMethod {
+abstract class HttpRouter extends Router implements HttpMethod {
   final Map<String, List<Function>> _params = {};
 
   ///注册[HttpMiddlewareLayer],[Function]必须是[HttpHandler]
@@ -63,6 +63,78 @@ class HttpRouter extends Router implements HttpMethod {
     _params[name]?.add(fn);
   }
 
+  String getPathName(HttpRequestWrapper req, String layerPath) {
+    return layerPath == '/'
+        ? req.inner.uri.path
+        : req.inner.uri.path
+            .substring((req as HttpRequestWrapperInternal).baseUrl.length);
+  }
+
+  @override
+  HttpRouter get(String uri, List<Function> callbacks) {
+    var route = this.route(uri);
+    for (var callback in callbacks) {
+      route.request(HttpMethod.httpGet, callback);
+    }
+    return this;
+  }
+
+  @override
+  HttpRouter post(String uri, List<Function> callbacks) {
+    var route = this.route(uri);
+    for (var callback in callbacks) {
+      route.request(HttpMethod.httpPost, callback);
+    }
+    return this;
+  }
+
+  @override
+  HttpMethod delete(String uri, List<Function> callbacks) {
+    var route = this.route(uri);
+    for (var callback in callbacks) {
+      route.request(HttpMethod.httpDelete, callback);
+    }
+    return this;
+  }
+
+  @override
+  HttpMethod head(String uri, List<Function> callbacks) {
+    var route = this.route(uri);
+    for (var callback in callbacks) {
+      route.request(HttpMethod.httpHead, callback);
+    }
+    return this;
+  }
+
+  @override
+  HttpMethod options(String uri, List<Function> callbacks) {
+    var route = this.route(uri);
+    for (var callback in callbacks) {
+      route.request(HttpMethod.httpOptions, callback);
+    }
+    return this;
+  }
+
+  @override
+  HttpMethod patch(String uri, List<Function> callbacks) {
+    var route = this.route(uri);
+    for (var callback in callbacks) {
+      route.request(HttpMethod.httpPatch, callback);
+    }
+    return this;
+  }
+
+  @override
+  HttpMethod put(String uri, List<Function> callbacks) {
+    var route = this.route(uri);
+    for (var callback in callbacks) {
+      route.request(HttpMethod.httpPut, callback);
+    }
+    return this;
+  }
+}
+
+class HttpRouterInternal extends HttpRouter implements HttpMethod {
   ///递归遍历_stack,查找[HttpRequest.uri]匹配的layer.
   ///
   ///[params]是请求发起时,在调用链开头传进来的参数,当前是http请求,[params]则是[HttpRequestWrapper]和[HttpResponseWrapper],
@@ -242,79 +314,9 @@ class HttpRouter extends Router implements HttpMethod {
       });
     }
   }
-
-  String getPathName(HttpRequestWrapper req, String layerPath) {
-    return layerPath == '/'
-        ? req.inner.uri.path
-        : req.inner.uri.path
-            .substring((req as HttpRequestWrapperInternal).baseUrl.length);
-  }
-
-  @override
-  HttpRouter get(String uri, List<Function> callbacks) {
-    var route = this.route(uri);
-    for (var callback in callbacks) {
-      route.request(HttpMethod.httpGet, callback);
-    }
-    return this;
-  }
-
-  @override
-  HttpRouter post(String uri, List<Function> callbacks) {
-    var route = this.route(uri);
-    for (var callback in callbacks) {
-      route.request(HttpMethod.httpPost, callback);
-    }
-    return this;
-  }
-
-  @override
-  HttpMethod delete(String uri, List<Function> callbacks) {
-    var route = this.route(uri);
-    for (var callback in callbacks) {
-      route.request(HttpMethod.httpDelete, callback);
-    }
-    return this;
-  }
-
-  @override
-  HttpMethod head(String uri, List<Function> callbacks) {
-    var route = this.route(uri);
-    for (var callback in callbacks) {
-      route.request(HttpMethod.httpHead, callback);
-    }
-    return this;
-  }
-
-  @override
-  HttpMethod options(String uri, List<Function> callbacks) {
-    var route = this.route(uri);
-    for (var callback in callbacks) {
-      route.request(HttpMethod.httpOptions, callback);
-    }
-    return this;
-  }
-
-  @override
-  HttpMethod patch(String uri, List<Function> callbacks) {
-    var route = this.route(uri);
-    for (var callback in callbacks) {
-      route.request(HttpMethod.httpPatch, callback);
-    }
-    return this;
-  }
-
-  @override
-  HttpMethod put(String uri, List<Function> callbacks) {
-    var route = this.route(uri);
-    for (var callback in callbacks) {
-      route.request(HttpMethod.httpPut, callback);
-    }
-    return this;
-  }
 }
 
-class WebSocketRouter extends Router implements WebSocketMethod {
+abstract class WebSocketRouter extends Router implements WebSocketMethod {
   final Map<String, List<Function>> _params = {};
 
   @override
@@ -352,6 +354,24 @@ class WebSocketRouter extends Router implements WebSocketMethod {
     _params[name]?.add(fn);
   }
 
+  String getPathName(HttpRequestWrapper req, String layerPath) {
+    return layerPath == '/'
+        ? req.inner.uri.path
+        : req.inner.uri.path
+            .substring((req as HttpRequestWrapperInternal).baseUrl.length);
+  }
+
+  @override
+  WebSocketRouter ws(String uri, List<Function> callbacks) {
+    var route = this.route(uri);
+    for (var callback in callbacks) {
+      route.request(WebSocketMethod.name, callback);
+    }
+    return this;
+  }
+}
+
+class WebSocketRouterInternal extends WebSocketRouter {
   @override
   Future<void> handle(List params, Function? done) async {
     HttpRequestWrapper req = params[0];
@@ -520,25 +540,9 @@ class WebSocketRouter extends Router implements WebSocketMethod {
       });
     }
   }
-
-  String getPathName(HttpRequestWrapper req, String layerPath) {
-    return layerPath == '/'
-        ? req.inner.uri.path
-        : req.inner.uri.path
-            .substring((req as HttpRequestWrapperInternal).baseUrl.length);
-  }
-
-  @override
-  WebSocketRouter ws(String uri, List<Function> callbacks) {
-    var route = this.route(uri);
-    for (var callback in callbacks) {
-      route.request(WebSocketMethod.name, callback);
-    }
-    return this;
-  }
 }
 
-class TCPRouter extends Router {
+abstract class TCPRouter extends Router {
   TCPRouter useTCPRouter({String path = '/', required TCPRouter router}) {
     if (_stack.any((layer) => layer is TCPRouterLayer)) {
       throw TCPError("The current TCP connection already exists.");
@@ -546,49 +550,6 @@ class TCPRouter extends Router {
     var layer = TCPRouterLayer('/', router.handle);
     _stack.add(layer);
     return this;
-  }
-
-  @override
-  Future<void> handle(List params, Function? done) async {
-    var client = params[0];
-    String? err;
-    String? layerError;
-    var idx = 0;
-
-    while (true) {
-      Layer? layer;
-      Route? route;
-      layerError = err == 'route' ? '' : err;
-      if (layerError == 'router' || layerError == 'finish') {
-        Future.microtask(() => done?.call(client, ''));
-        break;
-      }
-
-      if (idx >= _stack.length) {
-        Future.microtask(() => done?.call(client, layerError));
-        break;
-      }
-
-      while (idx < _stack.length) {
-        layer = _stack[idx++];
-        route = layer.route;
-        if (route == null) {
-          continue;
-        }
-        if (layerError != null && layerError.isNotEmpty) {
-          break;
-        }
-      }
-
-      if (err != null && err.isNotEmpty) {
-        err = layerError != null && layerError.isNotEmpty ? layerError : err;
-      } else {
-        layer as HandleLayer;
-        var next = Completer<String?>();
-        await layer.handleRequest([client], next);
-        err = await next.future;
-      }
-    }
   }
 
   @override
@@ -614,16 +575,7 @@ class TCPRouter extends Router {
   }
 }
 
-class UDPRouter extends Router {
-  UDPRouter useUDPRouter({String path = '/', required UDPRouter router}) {
-    if (_stack.any((layer) => layer is UDPRouterLayer)) {
-      throw TCPError("The current UDP connection already exists.");
-    }
-    var layer = UDPRouterLayer('/', router.handle);
-    _stack.add(layer);
-    return this;
-  }
-
+class TCPRouterInternal extends TCPRouter {
   @override
   Future<void> handle(List params, Function? done) async {
     var client = params[0];
@@ -666,6 +618,17 @@ class UDPRouter extends Router {
       }
     }
   }
+}
+
+abstract class UDPRouter extends Router {
+  UDPRouter useUDPRouter({String path = '/', required UDPRouter router}) {
+    if (_stack.any((layer) => layer is UDPRouterLayer)) {
+      throw TCPError("The current UDP connection already exists.");
+    }
+    var layer = UDPRouterLayer('/', router.handle);
+    _stack.add(layer);
+    return this;
+  }
 
   @override
   Route route(String path) {
@@ -689,3 +652,53 @@ class UDPRouter extends Router {
     return this;
   }
 }
+
+class UDPRouterInternal extends UDPRouter {
+  @override
+  Future<void> handle(List params, Function? done) async {
+    var client = params[0];
+    String? err;
+    String? layerError;
+    var idx = 0;
+
+    while (true) {
+      Layer? layer;
+      Route? route;
+      layerError = err == 'route' ? '' : err;
+      if (layerError == 'router' || layerError == 'finish') {
+        Future.microtask(() => done?.call(client, ''));
+        break;
+      }
+
+      if (idx >= _stack.length) {
+        Future.microtask(() => done?.call(client, layerError));
+        break;
+      }
+
+      while (idx < _stack.length) {
+        layer = _stack[idx++];
+        route = layer.route;
+        if (route == null) {
+          continue;
+        }
+        if (layerError != null && layerError.isNotEmpty) {
+          break;
+        }
+      }
+
+      if (err != null && err.isNotEmpty) {
+        err = layerError != null && layerError.isNotEmpty ? layerError : err;
+      } else {
+        layer as HandleLayer;
+        var next = Completer<String?>();
+        await layer.handleRequest([client], next);
+        err = await next.future;
+      }
+    }
+  }
+}
+
+HttpRouter httpRouter() => HttpRouterInternal();
+WebSocketRouter webSocketRouter() => WebSocketRouterInternal();
+TCPRouter tcpRouter() => TCPRouterInternal();
+UDPRouter udpRouter() => UDPRouterInternal();

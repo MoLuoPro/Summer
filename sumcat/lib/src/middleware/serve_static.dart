@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:sumcat/src/http/http.dart';
 
-import '../../sumcat.dart';
-
 ///静态服务中间件
 serveStatic(String path) {
   var baseUri = Directory.current.uri.resolve(path);
@@ -17,24 +15,63 @@ serveStatic(String path) {
       if (await file.exists()) {
         var fileType = extension(file.path);
         var content = await file.readAsString();
+        late String contentType;
         switch (fileType) {
           case '.html':
-            res.inner.headers.set('Content-Type', 'text/html; charset=utf-8');
+            contentType = 'text/html; charset=utf-8';
             break;
           case '.js':
-            res.inner.headers
-                .set('Content-Type', 'text/javascript; charset=utf-8');
+            contentType = 'text/javascript; charset=utf-8';
             break;
           case '.css':
-            res.inner.headers.set('Content-Type', 'text/css; charset=utf-8');
+            contentType = 'text/css; charset=utf-8';
             break;
           case '.xml':
-            res.inner.headers.set('Content-Type', 'text/xml; charset=utf-8');
+            contentType = 'text/xml; charset=utf-8';
             break;
           case '.json':
-            res.inner.headers.set('Content-Type', 'text/json; charset=utf-8');
+            contentType = 'text/json; charset=utf-8';
             break;
+          case '.mp4':
+            contentType = 'video/mp4';
+            break;
+          case '.webm':
+            contentType = 'video/webm';
+            break;
+          case '.ogg':
+            contentType = 'video/ogg';
+            break;
+          case '.jpeg':
+            contentType = 'image/jpeg';
+            break;
+          case '.png':
+            contentType = 'image/png';
+            break;
+          case '.gif':
+            contentType = 'image/gif';
+            break;
+          case '.svg':
+            contentType = 'image/svg+xml';
+            break;
+          case '.ttf':
+            contentType = 'font/ttf';
+            break;
+          case '.otf':
+            contentType = 'font/otf';
+            break;
+          case '.woff':
+            contentType = 'font/woff';
+            break;
+          case '.woff2':
+            contentType = 'font/woff2';
+            break;
+          case '.pdf':
+            contentType = 'application/pdf';
+            break;
+          default:
+            throw Exception('Content-Type none exists');
         }
+        res.inner.headers.set('Content-Type', contentType);
         res.inner.write(content);
       } else {
         res.inner.statusCode = 404;

@@ -1,6 +1,7 @@
 library http;
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 part './request_handler.dart';
@@ -10,20 +11,56 @@ part './final_handler.dart';
 part './error/error.dart';
 
 ///对[HttpRequest]的封装
-class HttpRequestWrapper {
-  final Map<String, dynamic> _params = {};
+class Request {
+  final Map<String, String> _params = {};
   final HttpRequest _inner;
   String _baseUrl = '';
 
-  HttpRequestWrapper(this._inner);
+  Request(this._inner);
 
-  HttpRequest get inner => _inner;
-  Map<String, dynamic> get params => _params;
+  HttpHeaders get headers => _inner.headers;
+  Uri get uri => _inner.uri;
+  String get encoding => headers.contentType?.charset ?? '';
+  String get method => _inner.method;
+  String get protocolVersion => _inner.protocolVersion;
+  Map<String, String> get params => _params;
+  Map<String, String> get query => uri.queryParameters;
+  Future<Map<String, String>> get body => decoding();
+
+  Future<Map<String, String>> decoding() async {
+    if (_dataType() == 'json') {
+      switch (encoding) {
+        case 'utf-8':
+          return await _utf8JsonDecoding();
+      }
+    } else if (_dataType() == 'x-www-form-urlencoded') {
+      switch (encoding) {
+        case 'utf-8':
+          return await _utf8FormDecoding();
+      }
+    }
+    return {};
+  }
+
+  String? _dataType() {
+    return headers.contentType?.subType;
+  }
+
+  Future<Map<String, String>> _utf8JsonDecoding() async {
+    var json = await utf8.decoder.bind(_inner).join();
+    return jsonDecode(json);
+  }
+
+  Future<Map<String, String>> _utf8FormDecoding() async {
+    var query = await utf8.decoder.bind(_inner).join();
+    return Uri.splitQueryString(query);
+  }
 }
 
-class HttpRequestWrapperInternal extends HttpRequestWrapper {
+class RequestInternal extends Request {
+  HttpRequest get inner => _inner;
   WebSocket? _ws;
-  HttpRequestWrapperInternal(HttpRequest inner) : super(inner);
+  RequestInternal(HttpRequest inner) : super(inner);
   String get baseUrl => _baseUrl;
   set baseUrl(value) => _baseUrl = value;
   WebSocket? get ws => _ws;
@@ -31,14 +68,23 @@ class HttpRequestWrapperInternal extends HttpRequestWrapper {
 }
 
 ///对[HttpResponse]的封装
-class HttpResponseWrapper {
+class Response {
   final HttpResponse _inner;
 
-  HttpResponse get inner => _inner;
+  Response(this._inner);
 
-  HttpResponseWrapper(this._inner);
+  int get statusCode => _inner.statusCode;
+  HttpHeaders get headers => _inner.headers;
+  List<Cookie> get cookies => _inner.cookies;
+  Encoding get encoding => _inner.encoding;
+
+  Future<dynamic> redirect(Uri location,
+          {int status = HttpStatus.movedTemporarily}) =>
+      _inner.redirect(location, status: status);
 }
 
-class HttpResponseWrapperInternal extends HttpResponseWrapper {
-  HttpResponseWrapperInternal(HttpResponse inner) : super(inner);
+class ResponseInternal extends Response {
+  ResponseInternal(HttpResponse inner) : super(inner);
+
+  HttpResponse get inner => _inner;
 }

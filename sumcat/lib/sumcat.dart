@@ -6,8 +6,8 @@ library sumcat;
 export 'src/application.dart' show Application, createApp;
 export 'src/http/http.dart'
     show
-        HttpRequestWrapper,
-        HttpResponseWrapper,
+        Request,
+        Response,
         HttpMethod,
         WebSocketMethod,
         TCPMethod,

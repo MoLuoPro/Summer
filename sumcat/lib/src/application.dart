@@ -81,8 +81,8 @@ class Application with Server, RequestHandler {
 
   Application params(
       List<String> names,
-      void Function(HttpRequestWrapper req, HttpResponseWrapper res,
-              Completer<String?> next, dynamic, String name)
+      void Function(Request req, Response res, Completer<String?> next, dynamic,
+              String name)
           fn) {
     params() async {
       await _lazyRouter();
@@ -97,8 +97,8 @@ class Application with Server, RequestHandler {
 
   Application param(
       String name,
-      void Function(HttpRequestWrapper req, HttpResponseWrapper res,
-              Completer<String?> next, dynamic, String name)
+      void Function(Request req, Response res, Completer<String?> next, dynamic,
+              String name)
           fn) {
     param() async {
       await _lazyRouter();
@@ -109,22 +109,15 @@ class Application with Server, RequestHandler {
     return this;
   }
 
-  FutureOr<void> _httpHandle(
-      HttpRequestWrapper req,
-      HttpResponseWrapper res,
-      void Function(
-              HttpRequestWrapper req, HttpResponseWrapper res, String? err)?
-          done) async {
+  FutureOr<void> _httpHandle(Request req, Response res,
+      void Function(Request req, Response res, String? err)? done) async {
     var handler = done ?? httpFinalHandler;
     await _lazyRouter();
     await _httpRouter?.handle([req, res], handler);
   }
 
-  FutureOr<void> _webSocketHandle(
-      HttpRequestWrapper req,
-      WebSocket ws,
-      void Function(HttpRequestWrapper req, WebSocket ws, String? err)?
-          done) async {
+  FutureOr<void> _webSocketHandle(Request req, WebSocket ws,
+      void Function(Request req, WebSocket ws, String? err)? done) async {
     var handler = done ?? webSocketFinalHandler;
     await _lazyRouter();
     await _webSocketRouter?.handle([req, ws], handler);

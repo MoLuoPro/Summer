@@ -1,26 +1,20 @@
 part of http;
 
 typedef HttpHandler = FutureOr<void> Function(
-    HttpRequestWrapper req, HttpResponseWrapper res, Completer<String?> next);
-typedef HttpErrorHandler = FutureOr<void> Function(String? err,
-    HttpRequestWrapper req, HttpResponseWrapper res, Completer<String?> next);
-typedef HttpFinalHandle = void Function(
-    HttpRequestWrapper req, HttpResponseWrapper res, String? err);
-typedef HttpRequestHandle = FutureOr<void> Function(
-    HttpRequestWrapper req,
-    HttpResponseWrapper res,
-    void Function(HttpRequestWrapper req, HttpResponseWrapper res, String? err)?
-        done);
+    Request req, Response res, Completer<String?> next);
+typedef HttpErrorHandler = FutureOr<void> Function(
+    String? err, Request req, Response res, Completer<String?> next);
+typedef HttpFinalHandle = void Function(Request req, Response res, String? err);
+typedef HttpRequestHandle = FutureOr<void> Function(Request req, Response res,
+    void Function(Request req, Response res, String? err)? done);
 typedef WebSocketHandler = FutureOr<void> Function(
-    HttpRequestWrapper req, WebSocket ws, Completer<String?> next);
+    Request req, WebSocket ws, Completer<String?> next);
 typedef WebSocketErrorHandler = FutureOr<void> Function(
-    String? err, HttpRequestWrapper req, WebSocket ws, Completer<String?> next);
+    String? err, Request req, WebSocket ws, Completer<String?> next);
 typedef WebSocketFinalHandle = void Function(
-    HttpRequestWrapper req, WebSocket ws, String? err);
-typedef WebSocketRequestHandle = FutureOr<void> Function(
-    HttpRequestWrapper req,
-    WebSocket ws,
-    void Function(HttpRequestWrapper req, WebSocket ws, String? err)? done);
+    Request req, WebSocket ws, String? err);
+typedef WebSocketRequestHandle = FutureOr<void> Function(Request req,
+    WebSocket ws, void Function(Request req, WebSocket ws, String? err)? done);
 typedef TCPSocketHandler = FutureOr<void> Function(
     Socket socket, Completer<String?> next);
 typedef TCPSocketErrorHandler = FutureOr<void> Function(

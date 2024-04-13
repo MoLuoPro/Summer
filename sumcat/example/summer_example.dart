@@ -25,7 +25,7 @@ void main() {
   //参数前置处理器
   router.param('id', (req, res, next, value, name) {
     print(req.params);
-    req.params.update('id', (value) => int.parse(value) + 10);
+    req.params.update('id', (val) => '${int.parse(value) + 10}');
     next.complete();
   });
   //路由器

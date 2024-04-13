@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:path/path.dart';
+import 'package:sumcat/src/http/http.dart';
 
 import '../../sumcat.dart';
 
@@ -8,10 +9,10 @@ import '../../sumcat.dart';
 serveStatic(String path) {
   var baseUri = Directory.current.uri.resolve(path);
   var baseDir = Directory.fromUri(baseUri);
-  return (HttpRequestWrapper req, HttpResponseWrapper res,
-      Completer<String?> next) async {
-    if (req.inner.method == HttpMethod.httpGet) {
-      var uri = baseDir.uri.resolve(req.inner.uri.path.substring(1));
+  return (Request req, Response res, Completer<String?> next) async {
+    res as ResponseInternal;
+    if (req.method == HttpMethod.httpGet) {
+      var uri = baseDir.uri.resolve(req.uri.path.substring(1));
       var file = File.fromUri(uri);
       if (await file.exists()) {
         var fileType = extension(file.path);

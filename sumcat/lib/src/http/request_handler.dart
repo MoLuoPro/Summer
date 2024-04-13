@@ -9,10 +9,10 @@ mixin RequestHandler on Server
       await for (HttpRequest req in _server!) {
         if (WebSocketTransformer.isUpgradeRequest(req)) {
           var socket = await WebSocketTransformer.upgrade(req);
-          await wsHandle(HttpRequestWrapper(req), socket, null);
+          await wsHandle(Request(req), socket, null);
         } else {
-          await httpHandle(HttpRequestWrapperInternal(req),
-              HttpResponseWrapperInternal(req.response), null);
+          await httpHandle(
+              RequestInternal(req), ResponseInternal(req.response), null);
         }
       }
     }

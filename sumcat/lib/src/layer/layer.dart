@@ -17,7 +17,7 @@ abstract class Layer {
   late RegExp _regExp;
   late List<String> _keys;
   Route? route;
-  Map<String, dynamic> param = {};
+  Map<String, String> param = {};
 
   List<String> get keys => _keys;
   String get path => _path;

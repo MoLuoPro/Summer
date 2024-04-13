@@ -56,18 +56,17 @@ abstract class HttpRouter extends Router implements HttpMethod {
   ///参数前置处理器
   void param(
       String name,
-      void Function(HttpRequestWrapper, HttpResponseWrapper, Completer<String?>,
-              dynamic, String name)
+      void Function(Request req, Response res, Completer<String?> next,
+              String value, String name)
           fn) {
     _params[name] ??= [];
     _params[name]?.add(fn);
   }
 
-  String getPathName(HttpRequestWrapper req, String layerPath) {
+  String getPathName(Request req, String layerPath) {
     return layerPath == '/'
-        ? req.inner.uri.path
-        : req.inner.uri.path
-            .substring((req as HttpRequestWrapperInternal).baseUrl.length);
+        ? req.uri.path
+        : req.uri.path.substring((req as RequestInternal).baseUrl.length);
   }
 
   @override
@@ -137,17 +136,17 @@ abstract class HttpRouter extends Router implements HttpMethod {
 class HttpRouterInternal extends HttpRouter implements HttpMethod {
   ///递归遍历_stack,查找[HttpRequest.uri]匹配的layer.
   ///
-  ///[params]是请求发起时,在调用链开头传进来的参数,当前是http请求,[params]则是[HttpRequestWrapper]和[HttpResponseWrapper],
+  ///[params]是请求发起时,在调用链开头传进来的参数,当前是http请求,[params]则是[Request]和[Response],
   ///[done]是[httpFinalHandler],在请求结束时调用.但是如果[HandleLayer._fn],类型为[HttpHandler]发生异常,并且有[HttpErrorHandler],则不会调用.
   @override
   Future<void> handle(List params, Function? done) async {
-    HttpRequestWrapper req = params[0];
-    HttpResponseWrapper res = params[1];
+    Request req = params[0];
+    Response res = params[1];
     String? err;
     String? layerError;
     var idx = 0;
     String removed = '';
-    String parentPath = (req as HttpRequestWrapperInternal).baseUrl;
+    String parentPath = (req as RequestInternal).baseUrl;
     Map<String, Map<String, dynamic>> paramCalled = {};
 
     while (true) {
@@ -201,8 +200,8 @@ class HttpRouterInternal extends HttpRouter implements HttpMethod {
       Future<void> processParams(
           Layer layer,
           Map<String, Map<String, dynamic>> called,
-          HttpRequestWrapper req,
-          HttpResponseWrapper res,
+          Request req,
+          Response res,
           Future<void> Function([String?]) done) async {
         var keys = layer.keys;
         var keyIdx = 0;
@@ -347,18 +346,17 @@ abstract class WebSocketRouter extends Router implements WebSocketMethod {
 
   void param(
       String name,
-      void Function(HttpRequestWrapper req, WebSocket ws,
-              Completer<String?> next, dynamic value, String name)
+      void Function(Request req, WebSocket ws, Completer<String?> next,
+              dynamic value, String name)
           fn) {
     _params[name] ??= [];
     _params[name]?.add(fn);
   }
 
-  String getPathName(HttpRequestWrapper req, String layerPath) {
+  String getPathName(Request req, String layerPath) {
     return layerPath == '/'
-        ? req.inner.uri.path
-        : req.inner.uri.path
-            .substring((req as HttpRequestWrapperInternal).baseUrl.length);
+        ? req.uri.path
+        : req.uri.path.substring((req as RequestInternal).baseUrl.length);
   }
 
   @override
@@ -374,13 +372,13 @@ abstract class WebSocketRouter extends Router implements WebSocketMethod {
 class WebSocketRouterInternal extends WebSocketRouter {
   @override
   Future<void> handle(List params, Function? done) async {
-    HttpRequestWrapper req = params[0];
+    Request req = params[0];
     WebSocket ws = params[1];
     String? err;
     String? layerError;
     var idx = 0;
     String removed = '';
-    String parentPath = (req as HttpRequestWrapperInternal).baseUrl;
+    String parentPath = (req as RequestInternal).baseUrl;
     Map<String, Map<String, dynamic>> paramCalled = {};
 
     while (true) {
@@ -428,7 +426,7 @@ class WebSocketRouterInternal extends WebSocketRouter {
       Future<void> processParams(
           Layer layer,
           Map<String, Map<String, dynamic>> called,
-          HttpRequestWrapper req,
+          Request req,
           WebSocket ws,
           Future<void> Function([String?]) done) async {
         var keys = layer.keys;

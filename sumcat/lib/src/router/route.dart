@@ -49,8 +49,9 @@ class HttpRoute extends Route {
   ///遍历[_stack],将参数分发给匹配的[Layer]
   @override
   Future<void> dispatch(List params, Completer<String?> done) async {
-    HttpRequestWrapper req = params[0];
-    HttpResponseWrapper res = params[1];
+    Request req = params[0];
+    Response res = params[1];
+    req as RequestInternal;
     var stack = _stack;
     var method = req.inner.method;
     var idx = 0;
@@ -102,8 +103,9 @@ class WebSocketRoute extends Route {
 
   @override
   Future<void> dispatch(List params, Completer<String?> done) async {
-    HttpRequestWrapper req = params[0];
+    Request req = params[0];
     WebSocket ws = params[1];
+    req as RequestInternal;
     var stack = _stack;
     var method = req.inner.method;
     var idx = 0;

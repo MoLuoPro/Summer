@@ -1,12 +1,14 @@
+import 'dart:async';
+
 import 'package:sumcat/sumcat.dart';
 
 void main() {
   var app = createApp();
   app.get('/index', [
-    (req, res, next) {
+    (Request req, Response res, Completer<String?> next) {
       throw Error();
     },
-    (err, req, res, next) {
+    (String? err, Request req, Response res, Completer<String?> next) {
       print(err);
     }
   ]);

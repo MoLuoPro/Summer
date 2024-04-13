@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:sumcat/sumcat.dart';
@@ -7,16 +8,14 @@ HttpRouter login = _init();
 HttpRouter _init() {
   login = httpRouter();
   login.post('/login', [
-    (req, res, next) async {
-      var json = await utf8.decoder.bind(req.inner).join();
-      Map data = jsonDecode(json);
+    (Request req, Response res, Completer<String?> next) async {
       try {
-        Map user = data['_value'];
-        json = jsonEncode(user);
+        var user = await req.body;
+        var json = jsonEncode(user);
         print(json);
-        res.inner.write(json);
+        res.ok(json);
       } catch (err) {
-        res.inner.write(false);
+        res.error('用户名或密码错误');
       }
     }
   ]);

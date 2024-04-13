@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -6,14 +7,14 @@ import 'package:sumcat/sumcat.dart';
 void main() {
   var app = createApp();
   app.tcp([
-    (client, next) async {
+    (ServerSocket client, Completer<String?> next) async {
       client.listen((event) {
         print(event);
       });
     }
   ]);
   app.udp([
-    (client, next) async {
+    (RawDatagramSocket client, Completer<String?> next) async {
       client.listen((event) {
         if (event == RawSocketEvent.read) {
           var datagram = client.receive();

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:mirrors';
 
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:sumcat/src/http/http.dart';

@@ -1,5 +1,6 @@
 part of http;
 
+///监听[Server]的请求
 mixin RequestHandler on Server
     implements HttpMethod, WebSocketMethod, TCPMethod, UDPMethod {
   void request(HttpRequestHandle httpHandle, WebSocketRequestHandle wsHandle) {

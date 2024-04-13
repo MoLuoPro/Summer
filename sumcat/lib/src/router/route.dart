@@ -46,6 +46,7 @@ abstract class Route {
 class HttpRoute extends Route {
   HttpRoute(String path) : super(path);
 
+  ///遍历[_stack],将参数分发给匹配的[Layer]
   @override
   Future<void> dispatch(List params, Completer<String?> done) async {
     HttpRequestWrapper req = params[0];

@@ -4,6 +4,7 @@ import 'package:path/path.dart';
 
 import '../../sumcat.dart';
 
+///静态服务中间件
 serveStatic(String path) {
   var baseUri = Directory.current.uri.resolve(path);
   var baseDir = Directory.fromUri(baseUri);

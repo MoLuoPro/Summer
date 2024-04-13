@@ -9,6 +9,11 @@ import '../layer/layer.dart';
 
 part './route.dart';
 
+///路由器,负责对[RouteLayer]以及[HttpMiddlewareLayer]进行管理.
+///
+///当接收到请求时,会调用[handle],遍历[_stack]并判断其类型是[RouteLayer]还是[HttpMiddlewareLayer],
+///如果是[RouteLayer],则调用[RouteLayer.handleRequest],
+///否则是[HttpMiddlewareLayer],调用[HttpMiddlewareLayer.handleRequest]
 abstract class Router {
   final List<Layer> _stack = [];
   Router use({String path = '/', required List<Function> fns});
@@ -20,6 +25,7 @@ abstract class Router {
 class HttpRouter extends Router implements HttpMethod {
   final Map<String, List<Function>> _params = {};
 
+  ///注册[HttpMiddlewareLayer],[Function]必须是[HttpHandler]
   @override
   HttpRouter use({String path = '/', required List<Function> fns}) {
     for (var fn in fns) {
@@ -29,6 +35,7 @@ class HttpRouter extends Router implements HttpMethod {
     return this;
   }
 
+  ///注册[Router]
   @override
   HttpRouter useRouter({String path = '/', required Router router}) {
     var layer = HttpRouterLayer(path, (router as HttpRouter).handle);
@@ -36,6 +43,7 @@ class HttpRouter extends Router implements HttpMethod {
     return this;
   }
 
+  ///注册[HttpRoute]
   @override
   Route route(String path) {
     var route = HttpRoute(path);
@@ -45,6 +53,7 @@ class HttpRouter extends Router implements HttpMethod {
     return route;
   }
 
+  ///参数前置处理器
   void param(
       String name,
       void Function(HttpRequestWrapper, HttpResponseWrapper, Completer<String?>,
@@ -54,6 +63,10 @@ class HttpRouter extends Router implements HttpMethod {
     _params[name]?.add(fn);
   }
 
+  ///递归遍历_stack,查找[HttpRequest.uri]匹配的layer.
+  ///
+  ///[params]是请求发起时,在调用链开头传进来的参数,当前是http请求,[params]则是[HttpRequestWrapper]和[HttpResponseWrapper],
+  ///[done]是[httpFinalHandler],在请求结束时调用.但是如果[HandleLayer._fn],类型为[HttpHandler]发生异常,并且有[HttpErrorHandler],则不会调用.
   @override
   Future<void> handle(List params, Function? done) async {
     HttpRequestWrapper req = params[0];
@@ -79,9 +92,10 @@ class HttpRouter extends Router implements HttpMethod {
         break;
       }
 
+      //使用正则匹配请求路径
       var match = false;
       if (removed.isNotEmpty) {
-        (req as HttpRequestWrapperInternal).baseUrl = parentPath;
+        (req).baseUrl = parentPath;
         removed = '';
       }
 
@@ -107,6 +121,11 @@ class HttpRouter extends Router implements HttpMethod {
 
       req.params.addAll(layer!.param);
 
+      ///解析uri中的参数
+      ///例如:
+      ///app.get('http://localhost:8080/user/:id', ...);
+      ///该方法则会解析:id的值
+      ///并且会调用
       Future<void> processParams(
           Layer layer,
           Map<String, Map<String, dynamic>> called,
@@ -174,6 +193,7 @@ class HttpRouter extends Router implements HttpMethod {
         }
       }
 
+      ///当Layer是HandleLayer或者RouterLayer时调用.
       Future<void> trimPrefix(
           Layer layer, String layerError, String layerPath, String path) async {
         if (layerPath.isNotEmpty) {
@@ -194,7 +214,7 @@ class HttpRouter extends Router implements HttpMethod {
             return;
           }
 
-          removed = (req as HttpRequestWrapperInternal).baseUrl += layerPath;
+          removed = (req).baseUrl += layerPath;
         }
         var next = Completer<String?>();
         if (layer is RouterLayer) {

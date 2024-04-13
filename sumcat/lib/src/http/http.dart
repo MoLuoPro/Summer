@@ -9,6 +9,7 @@ part './server.dart';
 part './final_handler.dart';
 part './error/error.dart';
 
+///对[HttpRequest]的封装
 class HttpRequestWrapper {
   final Map<String, dynamic> _params = {};
   final HttpRequest _inner;
@@ -29,6 +30,7 @@ class HttpRequestWrapperInternal extends HttpRequestWrapper {
   set ws(WebSocket? value) => _ws = value;
 }
 
+///对[HttpResponse]的封装
 class HttpResponseWrapper {
   final HttpResponse _inner;
 

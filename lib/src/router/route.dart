@@ -2,11 +2,11 @@ part of router;
 
 abstract class Route {
   final List _stack = [];
-  late String _path;
+  // late String _path;
 
-  Route(String path) {
-    _path = path;
-  }
+  // Route(String path) {
+  //   _path = path;
+  // }
 
   ///分发req,res给当前route下的handle
   Future<void> dispatch(List params, Completer<String?> done);
@@ -44,8 +44,6 @@ abstract class Route {
 }
 
 class HttpRoute extends Route {
-  HttpRoute(String path) : super(path);
-
   ///遍历[_stack],将参数分发给匹配的[Layer]
   @override
   Future<void> dispatch(List params, Completer<String?> done) async {
@@ -94,8 +92,6 @@ class HttpRoute extends Route {
 }
 
 class WebSocketRoute extends Route {
-  WebSocketRoute(String path) : super(path);
-
   @override
   bool canHandle(Layer layer, String method) {
     return method == HttpMethod.httpGet && layer.method == WebSocketMethod.name;
@@ -143,8 +139,6 @@ class WebSocketRoute extends Route {
 }
 
 class TCPRoute extends Route {
-  TCPRoute(String path) : super(path);
-
   @override
   bool canHandle(Layer layer, String method) {
     return layer.method == TCPMethod.name;
@@ -189,8 +183,6 @@ class TCPRoute extends Route {
 }
 
 class UDPRoute extends Route {
-  UDPRoute(String path) : super(path);
-
   @override
   bool canHandle(Layer layer, String method) {
     return layer.method == UDPMethod.name;

@@ -45,7 +45,7 @@ abstract class HttpRouter extends Router implements HttpMethod {
   ///注册[HttpRoute]
   @override
   Route route(String path) {
-    var route = HttpRoute(path);
+    var route = HttpRoute();
     var layer = HttpRouteLayer(path, route.dispatch);
     layer.route = route;
     _stack.add(layer);
@@ -339,7 +339,7 @@ abstract class WebSocketRouter extends Router implements WebSocketMethod {
 
   @override
   Route route(String path) {
-    var route = WebSocketRoute(path);
+    var route = WebSocketRoute();
     var layer = WebSocketRouteLayer(path, route.dispatch);
     layer.route = route;
     _stack.add(layer);
@@ -561,7 +561,7 @@ abstract class TCPRouter extends Router {
 
   @override
   Route route(String path) {
-    var route = TCPRoute(path);
+    var route = TCPRoute();
     var layer = TCPRouteLayer(path, route.dispatch);
     layer.route = route;
     _stack.add(layer);
@@ -639,7 +639,7 @@ abstract class UDPRouter extends Router {
 
   @override
   Route route(String path) {
-    var route = UDPRoute(path);
+    var route = UDPRoute();
     var layer = UDPRouteLayer(path, route.dispatch);
     layer.route = route;
     _stack.add(layer);

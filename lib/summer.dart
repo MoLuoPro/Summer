@@ -29,3 +29,4 @@ export './src/router/router.dart'
         tcpRouter,
         udpRouter;
 export './src/middleware/serve_static.dart';
+export './src/middleware/cors.dart';

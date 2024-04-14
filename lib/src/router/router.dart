@@ -182,7 +182,7 @@ class HttpRouterInternal extends HttpRouter implements HttpMethod {
       req.params.addAll(layer!.param);
 
       /// 解析uri中的参数
-      /// 
+      ///
       /// 例如:
       /// app.get('http://localhost:8080/user/:id', ...);
       /// 该方法则会解析:id的值
@@ -270,14 +270,8 @@ class HttpRouterInternal extends HttpRouter implements HttpMethod {
             return;
           }
 
-          var c = '';
-          try {
-            c = path[layerPath.length];
-          } on RangeError {
-            err = layerError;
-            return;
-          }
-          if (c != '/' && c != '.') {
+          var c = path.length > layerPath.length ? path[layerPath.length] : '';
+          if (c != '' && c != '/' && c != '.') {
             err = layerError;
             return;
           }

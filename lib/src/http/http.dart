@@ -27,18 +27,20 @@ class Request {
   Map<String, dynamic> get params => _params;
   Map<String, String> get query => uri.queryParameters;
   Future<Map<String, String>> get body => decodingBody();
+  HttpSession get session => _inner.session;
+  List<Cookie> get cookies => _inner.cookies;
 
   Future<Map<String, String>> decodingBody() async {
     if (_body.isNotEmpty) {
       return _body;
     }
-    var data = await decoding();
+    var data = await _decoding();
     String json = data.containsKey('_value') ? data['_value']! : '';
-    _body = jsonDecode(json);
+    _body = json == '' ? {} : jsonDecode(json);
     return _body;
   }
 
-  Future<Map<String, String>> decoding() async {
+  Future<Map<String, String>> _decoding() async {
     if (_dataType() == 'json') {
       switch (encoding) {
         case 'utf-8':
@@ -91,33 +93,26 @@ class Response {
           {int status = HttpStatus.movedTemporarily}) =>
       _inner.redirect(location, status: status);
 
-  Response ok(
-      [String json = '',
-      String contentType = 'application/json charset=utf-8']) {
-    _inner.statusCode = 200;
-    _inner.write(json);
+  Response sendStatus(int statusCode) {
+    _inner.statusCode = statusCode;
     return this;
   }
 
-  Response error(
-      [String message = 'error!',
-      int statusCode = HttpStatus.internalServerError]) {
-    _inner.statusCode = statusCode;
-    _inner.write(message);
-    return this;
-  }
-
-  Response json(Map<String, dynamic> data, int statusCode) {
-    _inner.statusCode = statusCode;
+  Response json(Map<String, dynamic> data) {
     _inner.write(jsonEncode(data));
     return this;
   }
 
-  Response string(String string, int statusCode) {
-    _inner.statusCode = statusCode;
-    _inner.write(string);
+  Response send(dynamic data) {
+    if (data is List) {
+      _inner.writeAll(data);
+    } else {
+      _inner.write(data);
+    }
     return this;
   }
+
+  Future<dynamic> close() => _inner.close();
 }
 
 class ResponseInternal extends Response {

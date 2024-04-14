@@ -1,6 +1,3 @@
-/// Support for doing something awesome.
-///
-/// More dartdocs go here.
 library summer;
 
 export './src/application.dart' show Application, createApp;

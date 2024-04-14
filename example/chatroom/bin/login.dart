@@ -15,7 +15,7 @@ HttpRouter _init() {
         print(json);
         res.ok(json);
       } catch (err) {
-        res.error('用户名或密码错误');
+        res.error('Username or password is incorrect !');
       }
     }
   ]);

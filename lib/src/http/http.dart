@@ -70,15 +70,13 @@ class Request {
 
 class RequestInternal extends Request {
   HttpRequest get inner => _inner;
-  WebSocket? _ws;
+  WebSocket? ws;
   RequestInternal(HttpRequest inner) : super(inner);
   String get baseUrl => _baseUrl;
   set baseUrl(value) => _baseUrl = value;
-  WebSocket? get ws => _ws;
-  set ws(WebSocket? value) => _ws = value;
 }
 
-///对[HttpResponse]的封装
+/// 对[HttpResponse]的封装
 class Response {
   final HttpResponse _inner;
 

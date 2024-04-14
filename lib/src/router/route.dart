@@ -8,7 +8,7 @@ abstract class Route {
   //   _path = path;
   // }
 
-  ///分发req,res给当前route下的handle
+  /// 分发req, res给当前route下的handler
   Future<void> dispatch(List params, Completer<String?> done);
 
   bool canHandle(Layer layer, String method);
@@ -44,7 +44,8 @@ abstract class Route {
 }
 
 class HttpRoute extends Route {
-  ///遍历[_stack],将参数分发给匹配的[Layer]
+  
+  /// 遍历[_stack],将参数分发给匹配的[Layer]
   @override
   Future<void> dispatch(List params, Completer<String?> done) async {
     Request req = params[0];

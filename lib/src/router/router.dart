@@ -8,11 +8,11 @@ import '../layer/layer.dart';
 
 part './route.dart';
 
-///路由器,负责对[RouteLayer]以及[HttpMiddlewareLayer]进行管理.
+/// 路由器,负责对[RouteLayer]以及[HttpMiddlewareLayer]进行管理
 ///
-///当接收到请求时,会调用[handle],遍历[_stack]并判断其类型是[RouteLayer]还是[HttpMiddlewareLayer],
-///如果是[RouteLayer],则调用[RouteLayer.handleRequest],
-///否则是[HttpMiddlewareLayer],调用[HttpMiddlewareLayer.handleRequest]
+/// 当接收到请求时,会调用[handle],遍历[_stack]并判断其类型是[RouteLayer]还是[HttpMiddlewareLayer]
+/// 如果是[RouteLayer],则调用[RouteLayer.handleRequest]
+/// 否则是[HttpMiddlewareLayer],调用[HttpMiddlewareLayer.handleRequest]
 abstract class Router {
   final List<Layer> _stack = [];
   Router use({String path = '/', required List<Function> fns});
@@ -24,7 +24,7 @@ abstract class Router {
 abstract class HttpRouter extends Router implements HttpMethod {
   final Map<String, List<Function>> _params = {};
 
-  ///注册[HttpMiddlewareLayer],[Function]必须是[HttpHandler]
+  /// 注册[HttpMiddlewareLayer],[Function]必须是[HttpHandler]
   @override
   HttpRouter use({String path = '/', required List<Function> fns}) {
     for (var fn in fns) {
@@ -34,7 +34,7 @@ abstract class HttpRouter extends Router implements HttpMethod {
     return this;
   }
 
-  ///注册[Router]
+  /// 注册[Router]
   @override
   HttpRouter useRouter({String path = '/', required Router router}) {
     var layer = HttpRouterLayer(path, (router as HttpRouter).handle);
@@ -42,7 +42,7 @@ abstract class HttpRouter extends Router implements HttpMethod {
     return this;
   }
 
-  ///注册[HttpRoute]
+  /// 注册[HttpRoute]
   @override
   Route route(String path) {
     var route = HttpRoute();
@@ -52,7 +52,7 @@ abstract class HttpRouter extends Router implements HttpMethod {
     return route;
   }
 
-  ///参数前置处理器
+  /// 参数前置处理器
   void param(String name, Function fn) {
     _params[name] ??= [];
     _params[name]?.add(fn);
@@ -123,10 +123,10 @@ abstract class HttpRouter extends Router implements HttpMethod {
 }
 
 class HttpRouterInternal extends HttpRouter implements HttpMethod {
-  ///递归遍历_stack,查找[HttpRequest.uri]匹配的layer.
+  /// 递归遍历_stack,查找[HttpRequest.uri]匹配的layer.
   ///
-  ///[params]是请求发起时,在调用链开头传进来的参数,当前是http请求,[params]则是[Request]和[Response],
-  ///[done]是[httpFinalHandler],在请求结束时调用.但是如果[HandleLayer._fn],类型为[HttpHandler]发生异常,并且有[HttpErrorHandler],则不会调用.
+  /// [params]是请求发起时,在调用链开头传进来的参数,当前是http请求,[params]则是[Request]和[Response],
+  /// [done]是[httpFinalHandler],在请求结束时调用.但是如果[HandleLayer._fn],类型为[HttpHandler]发生异常,并且有[HttpErrorHandler],则不会调用.
   @override
   Future<void> handle(List params, Function? done) async {
     Request req = params[0];
@@ -152,7 +152,7 @@ class HttpRouterInternal extends HttpRouter implements HttpMethod {
         break;
       }
 
-      //使用正则匹配请求路径
+      // 使用正则匹配请求路径
       var match = false;
       if (removed.isNotEmpty) {
         (req).baseUrl = parentPath;
@@ -181,11 +181,12 @@ class HttpRouterInternal extends HttpRouter implements HttpMethod {
 
       req.params.addAll(layer!.param);
 
-      ///解析uri中的参数
-      ///例如:
-      ///app.get('http://localhost:8080/user/:id', ...);
-      ///该方法则会解析:id的值
-      ///并且会调用
+      /// 解析uri中的参数
+      /// 
+      /// 例如:
+      /// app.get('http://localhost:8080/user/:id', ...);
+      /// 该方法则会解析:id的值
+      /// 并且会调用
       Future<void> processParams(
           Layer layer,
           Map<String, Map<String, dynamic>> called,

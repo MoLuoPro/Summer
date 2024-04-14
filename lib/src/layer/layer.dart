@@ -89,7 +89,7 @@ class RouteLayer extends HandleLayer {
   }
 
   @override
-  bool isSimple() {
+  bool _isSimple() {
     return false;
   }
 }
@@ -115,7 +115,7 @@ abstract class HandleLayer extends Layer {
 
   bool _requestCondition();
   bool _errorCondition();
-  bool isSimple();
+  bool _isSimple();
 
   Future<void> _handleError(List params, [Completer<String?> next]);
 
@@ -125,7 +125,7 @@ abstract class HandleLayer extends Layer {
       List<dynamic> params, Completer<String?> next) async {
     try {
       if (_requestCondition()) {
-        if (isSimple()) {
+        if (_isSimple()) {
           await _handleRequest(params);
           next.complete();
         } else {
@@ -153,7 +153,7 @@ abstract class HandleLayer extends Layer {
       List<dynamic> params, Completer<String?> next) async {
     try {
       if (_errorCondition()) {
-        if (isSimple()) {
+        if (_isSimple()) {
           await _handleError(params);
           next.complete();
         } else {
@@ -201,11 +201,11 @@ class HttpHandleLayer extends HandleLayer {
 
   @override
   bool _errorCondition() {
-    return _fn is HttpErrorHandler;
+    return _fn is HttpErrorHandler || _fn is HttpErrorSimpleHandler;
   }
 
   @override
-  bool isSimple() {
+  bool _isSimple() {
     return _fn is HttpSimpleHandler || _fn is HttpErrorSimpleHandler;
   }
 }
@@ -234,11 +234,11 @@ class WebSocketHandleLayer extends HandleLayer {
 
   @override
   bool _errorCondition() {
-    return _fn is WebSocketErrorHandler;
+    return _fn is WebSocketErrorHandler || _fn is WebSocketErrorSimpleHandler;
   }
 
   @override
-  bool isSimple() {
+  bool _isSimple() {
     return _fn is WebSocketSimpleHandler || _fn is WebSocketErrorSimpleHandler;
   }
 }
@@ -260,7 +260,7 @@ class TCPHandleLayer extends HandleLayer {
 
   @override
   bool _errorCondition() {
-    return _fn is TCPSocketErrorHandler;
+    return _fn is TCPSocketErrorHandler || _fn is TCPSocketErrorSimpeHandler;
   }
 
   @override
@@ -269,7 +269,7 @@ class TCPHandleLayer extends HandleLayer {
   }
 
   @override
-  bool isSimple() {
+  bool _isSimple() {
     return _fn is TCPSocketSimpleHandler || _fn is TCPSocketErrorSimpeHandler;
   }
 }
@@ -291,7 +291,7 @@ class UDPHandleLayer extends HandleLayer {
 
   @override
   bool _errorCondition() {
-    return _fn is UDPSocketErrorHandler;
+    return _fn is UDPSocketErrorHandler || _fn is UDPSocketErrorSimpleHandler;
   }
 
   @override
@@ -300,7 +300,7 @@ class UDPHandleLayer extends HandleLayer {
   }
 
   @override
-  bool isSimple() {
+  bool _isSimple() {
     return _fn is UDPSocketSimpleHandler || _fn is UDPSocketErrorSimpleHandler;
   }
 }
@@ -324,7 +324,7 @@ class HttpMiddlewareLayer extends HandleLayer {
 
   @override
   bool _errorCondition() {
-    return _fn is HttpErrorHandler;
+    return _fn is HttpErrorHandler || _fn is HttpErrorSimpleHandler;
   }
 
   @override
@@ -333,7 +333,7 @@ class HttpMiddlewareLayer extends HandleLayer {
   }
 
   @override
-  bool isSimple() {
+  bool _isSimple() {
     return _fn is HttpSimpleHandler || _fn is HttpErrorSimpleHandler;
   }
 }

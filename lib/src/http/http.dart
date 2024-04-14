@@ -13,7 +13,7 @@ part './server.dart';
 part './final_handler.dart';
 part './error/error.dart';
 
-///对[HttpRequest]的封装
+/// 对[HttpRequest]的封装
 class Request {
   final Map<String, dynamic> _params = {};
   final HttpRequest _inner;
@@ -115,7 +115,7 @@ class Response {
     return this;
   }
 
-  Future<void> download(String path, void Function([String? err]) done) async {
+  Future<void> download(String path) async {
     Uri uri = Directory.current.uri.resolve(path);
     var file = File.fromUri(uri);
     if (await file.exists()) {
@@ -124,8 +124,9 @@ class Response {
       _inner.headers
           .set('Content-Disposition', 'attachment; filename="$fileName"');
       _inner.headers.set('Content-Type', mimeType);
+      _inner.writeAll(await file.readAsBytes());
     } else {
-      done('File dose not exists');
+      throw FileSystemException('file dose not exists.', path);
     }
   }
 

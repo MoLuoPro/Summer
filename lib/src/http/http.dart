@@ -4,6 +4,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:mime_type/mime_type.dart';
+import 'package:path/path.dart';
+
 part './request_handler.dart';
 part './methods.dart';
 part './server.dart';
@@ -110,6 +113,20 @@ class Response {
       _inner.write(data);
     }
     return this;
+  }
+
+  Future<void> download(String path, void Function([String? err]) done) async {
+    Uri uri = Directory.current.uri.resolve(path);
+    var file = File.fromUri(uri);
+    if (await file.exists()) {
+      var fileName = basename(file.path);
+      var mimeType = mime(fileName) ?? 'application/octet-stream';
+      _inner.headers
+          .set('Content-Disposition', 'attachment; filename="$fileName"');
+      _inner.headers.set('Content-Type', mimeType);
+    } else {
+      done('File dose not exists');
+    }
   }
 
   Future<dynamic> close() => _inner.close();

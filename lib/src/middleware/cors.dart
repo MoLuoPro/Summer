@@ -126,6 +126,6 @@ bool _isOriginAllowed(origin, allowedOrigin) {
   } else if (allowedOrigin is RegExp) {
     return allowedOrigin.hasMatch(origin);
   } else {
-    return !!allowedOrigin;
+    return allowedOrigin != null;
   }
 }

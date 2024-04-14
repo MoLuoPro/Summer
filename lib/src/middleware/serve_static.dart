@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:mime_type/mime_type.dart';
 import 'package:path/path.dart';
 
 import '../http/http.dart';
@@ -14,65 +15,11 @@ serveStatic(String path) {
       var uri = baseDir.uri.resolve(req.uri.path.substring(1));
       var file = File.fromUri(uri);
       if (await file.exists()) {
-        var fileType = extension(file.path);
+        var fileName = basename(file.path);
+        var mimeType = mime(fileName);
+        mimeType = mimeType ?? 'application/octet-stream';
         var content = await file.readAsString();
-        late String contentType;
-        switch (fileType) {
-          case '.html':
-            contentType = 'text/html; charset=utf-8';
-            break;
-          case '.js':
-            contentType = 'text/javascript; charset=utf-8';
-            break;
-          case '.css':
-            contentType = 'text/css; charset=utf-8';
-            break;
-          case '.xml':
-            contentType = 'text/xml; charset=utf-8';
-            break;
-          case '.json':
-            contentType = 'text/json; charset=utf-8';
-            break;
-          case '.mp4':
-            contentType = 'video/mp4';
-            break;
-          case '.webm':
-            contentType = 'video/webm';
-            break;
-          case '.ogg':
-            contentType = 'video/ogg';
-            break;
-          case '.jpeg':
-            contentType = 'image/jpeg';
-            break;
-          case '.png':
-            contentType = 'image/png';
-            break;
-          case '.gif':
-            contentType = 'image/gif';
-            break;
-          case '.svg':
-            contentType = 'image/svg+xml';
-            break;
-          case '.ttf':
-            contentType = 'font/ttf';
-            break;
-          case '.otf':
-            contentType = 'font/otf';
-            break;
-          case '.woff':
-            contentType = 'font/woff';
-            break;
-          case '.woff2':
-            contentType = 'font/woff2';
-            break;
-          case '.pdf':
-            contentType = 'application/pdf';
-            break;
-          default:
-            throw Exception('Content-Type none exists');
-        }
-        res.inner.headers.set('Content-Type', contentType);
+        res.inner.headers.set('Content-Type', mimeType);
         res.inner.write(content);
       } else {
         res.inner.statusCode = 404;

@@ -5,7 +5,7 @@ void main(List<String> arguments) {
   var corsOptions = {'origin': 'http://localhost:4200'};
   app.use(path: '*', fns: [cors(corsOptions)]);
   app.get('/test', [
-    (req, res) {
+    (Request req, Response res) {
       print('test');
     }
   ]);

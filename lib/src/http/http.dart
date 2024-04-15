@@ -17,7 +17,7 @@ part './error/error.dart';
 class Request {
   final Map<String, dynamic> _params = {};
   final HttpRequest _inner;
-  Map<String, String> _body = {};
+  dynamic _body;
   String _baseUrl = '';
 
   Request(this._inner);
@@ -29,40 +29,39 @@ class Request {
   String get protocolVersion => _inner.protocolVersion;
   Map<String, dynamic> get params => _params;
   Map<String, String> get query => uri.queryParameters;
-  Future<Map<String, String>> get body => decodingBody();
+  Future<dynamic> get body => decodingBody();
   HttpSession get session => _inner.session;
   List<Cookie> get cookies => _inner.cookies;
 
-  Future<Map<String, String>> decodingBody() async {
-    if (_body.isNotEmpty) {
+  Future<dynamic> decodingBody() async {
+    if (_body != null) {
       return _body;
     }
-    var data = await _decoding();
-    String json = data.containsKey('_value') ? data['_value']! : '';
-    _body = json == '' ? {} : jsonDecode(json);
-    return _body;
+    return await _decoding();
   }
 
-  Future<Map<String, String>> _decoding() async {
-    if (_dataType() == 'json') {
+  Future<dynamic> _decoding() async {
+    var dataType = _dataType();
+    if (dataType == 'json') {
       switch (encoding) {
         case 'utf-8':
           return await _utf8JsonDecoding();
       }
-    } else if (_dataType() == 'x-www-form-urlencoded') {
+    } else if (dataType == 'x-www-form-urlencoded') {
       switch (encoding) {
         case 'utf-8':
           return await _utf8FormDecoding();
       }
+    } else {
+      return _bytesDecoding();
     }
-    return {};
   }
 
   String? _dataType() {
     return headers.contentType?.subType;
   }
 
-  Future<Map<String, String>> _utf8JsonDecoding() async {
+  Future<Map<String, dynamic>> _utf8JsonDecoding() async {
     var json = await utf8.decoder.bind(_inner).join();
     return jsonDecode(json);
   }
@@ -71,6 +70,9 @@ class Request {
     var query = await utf8.decoder.bind(_inner).join();
     return Uri.splitQueryString(query);
   }
+
+  Future<List<int>> _bytesDecoding() async => await _inner
+      .fold<List<int>>([], (prev, elements) => prev..addAll(elements));
 }
 
 class RequestInternal extends Request {
@@ -106,16 +108,22 @@ class Response {
     return this;
   }
 
-  Response send(dynamic data) {
-    if (data is List) {
-      _inner.writeAll(data);
-    } else {
-      _inner.write(data);
-    }
+  Response jsonList(List<Map<String, dynamic>> data) {
+    _inner.write(jsonEncode(data));
     return this;
   }
 
-  Future<void> download(String path) async {
+  Response send(dynamic data) {
+    _inner.write(data);
+    return this;
+  }
+
+  Response sendAll<T>(Iterable<T> data, [String separator = ""]) {
+    _inner.writeAll(data, separator);
+    return this;
+  }
+
+  Future<void> downloadFile(String path) async {
     Uri uri = Directory.current.uri.resolve(path);
     var file = File.fromUri(uri);
     if (await file.exists()) {
@@ -125,6 +133,16 @@ class Response {
           .set('Content-Disposition', 'attachment; filename="$fileName"');
       _inner.headers.set('Content-Type', mimeType);
       _inner.writeAll(await file.readAsBytes());
+    } else {
+      throw FileSystemException('file dose not exists.', path);
+    }
+  }
+
+  Future<void> deleteFile(String path, [bool recursive = false]) async {
+    Uri uri = Directory.current.uri.resolve(path);
+    var file = File.fromUri(uri);
+    if (await file.exists()) {
+      await file.delete(recursive: recursive);
     } else {
       throw FileSystemException('file dose not exists.', path);
     }

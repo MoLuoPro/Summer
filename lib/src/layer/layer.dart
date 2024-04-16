@@ -1,8 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:path/path.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
+import 'package:summer/src/middleware/smart_balancer.dart';
 import '../http/http.dart';
 
 import '../router/router.dart';
@@ -182,13 +181,31 @@ abstract class HandleLayer extends Layer {
 class HttpHandleLayer extends HandleLayer {
   HttpHandleLayer(String path, Function fn) : super(path, fn);
 
+  Future<dynamic> sendTask(Request req, Function fn) async {
+    req as RequestInternal;
+    Completer<String?>? completer = Completer();
+    var port = req.threadPool!.sendPorts[req.threadId!];
+    port.send(Task(fn, completer, port, req.threadId!));
+    await completer.future;
+    await for (var result in req.threadPool!.streamController.stream) {
+      result as Result;
+      if (req.threadId == result.threadId) {
+        return result.data;
+      }
+    }
+  }
+
   @override
   Future<void> _handleError(List params, [Completer<String?>? next]) async {
     Request req = params[0];
     Response res = params[1];
-    var result = await (next == null
+    req as RequestInternal;
+    Future<dynamic> fn() async => await (next == null
         ? _fn(params[0], params[1], params[2])
         : _fn(params[0], params[1], params[2], next));
+    dynamic result = await (req.threadId != null && req.threadPool != null
+        ? sendTask(req, fn)
+        : fn());
     await processHandle(req, res, result);
   }
 
@@ -196,9 +213,17 @@ class HttpHandleLayer extends HandleLayer {
   Future<void> _handleRequest(List params, [Completer<String?>? next]) async {
     Request req = params[0];
     Response res = params[1];
-    var result = await (next == null
-        ? _fn(params[0], params[1])
-        : _fn(params[0], params[1], next));
+    req as RequestInternal;
+
+    Future<dynamic> fn() async {
+      return await (next == null
+          ? _fn(params[0], params[1])
+          : _fn(params[0], params[1], next));
+    }
+
+    dynamic result = await (req.threadId != null && req.threadPool != null
+        ? sendTask(req, fn)
+        : fn());
     await processHandle(req, res, result);
   }
 

@@ -16,7 +16,9 @@ export './src/http/http.dart'
         TCPSocketHandler,
         TCPSocketErrorHandler,
         UDPSocketHandler,
-        UDPSocketErrorHandler;
+        UDPSocketErrorHandler,
+        HttpSimpleHandler,
+        HttpErrorSimpleHandler;
 export './src/router/router.dart'
     show
         Router,
@@ -31,3 +33,4 @@ export './src/router/router.dart'
 export './src/middleware/serve_static.dart';
 export './src/middleware/cors.dart';
 export './src/middleware/file_db.dart';
+export './src/middleware/smart_balancer.dart';

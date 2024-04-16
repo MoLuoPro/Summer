@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:path/path.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import '../http/http.dart';
 
@@ -182,16 +184,32 @@ class HttpHandleLayer extends HandleLayer {
 
   @override
   Future<void> _handleError(List params, [Completer<String?>? next]) async {
-    await (next == null
+    Request req = params[0];
+    Response res = params[1];
+    var result = await (next == null
         ? _fn(params[0], params[1], params[2])
         : _fn(params[0], params[1], params[2], next));
+    await processHandle(req, res, result);
   }
 
   @override
   Future<void> _handleRequest(List params, [Completer<String?>? next]) async {
-    await (next == null
+    Request req = params[0];
+    Response res = params[1];
+    var result = await (next == null
         ? _fn(params[0], params[1])
         : _fn(params[0], params[1], next));
+    await processHandle(req, res, result);
+  }
+
+  Future<void> processHandle(Request req, Response res, dynamic result) async {
+    if (result != null) {
+      if (result is List) {
+        res.sendAll(result);
+      } else {
+        res.send(result);
+      }
+    }
   }
 
   @override

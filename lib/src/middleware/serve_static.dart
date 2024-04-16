@@ -15,15 +15,20 @@ serveStatic(String path) {
       var uri = baseDir.uri.resolve(req.uri.path.substring(1));
       var file = File.fromUri(uri);
       if (await file.exists()) {
-        var fileName = basename(file.path);
-        var mimeType = mime(fileName);
-        mimeType = mimeType ?? 'application/octet-stream';
-        var content = await file.readAsString();
-        res.inner.headers.set('Content-Type', mimeType);
-        res.inner.write(content);
+        await _getFile(req, res, file);
       } else {
         res.inner.statusCode = 404;
       }
     }
   };
+}
+
+Future<void> _getFile(Request req, Response res, File file) async {
+  var fileName = basename(file.path);
+  var mimeType = mime(fileName);
+  mimeType = mimeType ?? 'application/octet-stream';
+  var content = await file.readAsString();
+  res.headers.set('Content-Type', mimeType);
+  res.sendStatus(200);
+  res.send(content);
 }

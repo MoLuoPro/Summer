@@ -19,11 +19,13 @@ class Request {
   final HttpRequest _inner;
   dynamic _body;
   String _baseUrl = '';
+  Map _data = {};
 
   Request(this._inner);
 
   HttpHeaders get headers => _inner.headers;
   Uri get uri => _inner.uri;
+  Uri get requestedUri => _inner.requestedUri;
   String get encoding => headers.contentType?.charset ?? '';
   String get method => _inner.method;
   String get protocolVersion => _inner.protocolVersion;
@@ -32,6 +34,7 @@ class Request {
   Future<dynamic> get body => decodingBody();
   HttpSession get session => _inner.session;
   List<Cookie> get cookies => _inner.cookies;
+  Map get data => _data;
 
   Future<dynamic> decodingBody() async {
     if (_body != null) {
@@ -93,6 +96,7 @@ class Response {
   HttpHeaders get headers => _inner.headers;
   List<Cookie> get cookies => _inner.cookies;
   Encoding get encoding => _inner.encoding;
+  Future<dynamic> get done => _inner.done;
 
   Future<dynamic> redirect(Uri location,
           {int status = HttpStatus.movedTemporarily}) =>
@@ -133,16 +137,6 @@ class Response {
           .set('Content-Disposition', 'attachment; filename="$fileName"');
       _inner.headers.set('Content-Type', mimeType);
       _inner.writeAll(await file.readAsBytes());
-    } else {
-      throw FileSystemException('file dose not exists.', path);
-    }
-  }
-
-  Future<void> deleteFile(String path, [bool recursive = false]) async {
-    Uri uri = Directory.current.uri.resolve(path);
-    var file = File.fromUri(uri);
-    if (await file.exists()) {
-      await file.delete(recursive: recursive);
     } else {
       throw FileSystemException('file dose not exists.', path);
     }

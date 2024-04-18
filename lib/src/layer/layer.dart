@@ -250,8 +250,8 @@ class HttpHandleLayer extends HandleLayer {
   @override
   bool _isSimple(List params) {
     // HttpSimpleHandler || HttpErrorSimpleHandler
-    return (param.length == 2 && params[0] is Request) ||
-        (param.length == 3 && params[0] is String?);
+    return (params.length == 2 && params[0] is Request) ||
+        (params.length == 3 && params[0] is String?);
   }
 }
 
@@ -285,8 +285,8 @@ class WebSocketHandleLayer extends HandleLayer {
   @override
   bool _isSimple(List params) {
     //_fn is WebSocketSimpleHandler || _fn is WebSocketErrorSimpleHandler
-    return (param.length == 2 && params[0] is Request) ||
-        (param.length == 3 && params[0] is String?);
+    return (params.length == 2 && params[0] is Request) ||
+        (params.length == 3 && params[0] is String?);
   }
 }
 
@@ -318,8 +318,8 @@ class TCPHandleLayer extends HandleLayer {
   @override
   bool _isSimple(List params) {
     // TCPSocketSimpleHandler || TCPSocketErrorSimpeHandler
-    return (param.length == 1 && params[0] is Socket) ||
-        (param.length == 2 && params[0] is String?);
+    return (params.length == 1 && params[0] is Socket) ||
+        (params.length == 2 && params[0] is String?);
   }
 }
 
@@ -351,8 +351,8 @@ class UDPHandleLayer extends HandleLayer {
   @override
   bool _isSimple(List params) {
     // UDPSocketSimpleHandler || UDPSocketErrorSimpleHandler;
-    return (param.length == 1 && params[0] is RawDatagramSocket) ||
-        (param.length == 2 && params[0] is String?);
+    return (params.length == 1 && params[0] is RawDatagramSocket) ||
+        (params.length == 2 && params[0] is String?);
   }
 }
 
@@ -385,8 +385,8 @@ class HttpMiddlewareLayer extends HandleLayer {
 
   @override
   bool _isSimple(List params) {
-    return (param.length == 2 && params[0] is Request) ||
-        (param.length == 3 && params[0] is String?);
+    return (params.length == 2 && params[0] is Request) ||
+        (params.length == 3 && params[0] is String?);
   }
 }
 

@@ -1,7 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
-import 'dart:io';
-
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:reflectable/reflectable.dart';
 import '../http/http.dart';
@@ -117,9 +114,13 @@ abstract class HandleLayer extends Layer {
   bool _requestCondition();
   bool _errorCondition();
 
-  Future<void> _handleError(List params, [Completer<String?> next]);
+  Future<void> _handleError(List params, Completer<String?> next) async {
+    await Function.apply(_fn, [...params, next]);
+  }
 
-  Future<void> _handleRequest(List params, [Completer<String?> next]);
+  Future<void> _handleRequest(List params, Completer<String?> next) async {
+    await Function.apply(_fn, [...params, next]);
+  }
 
   Future<void> handleRequest(
       List<dynamic> params, Completer<String?> next) async {
@@ -183,36 +184,18 @@ class HttpHandleLayer extends HandleLayer {
 
   @override
   Future<void> _handleError(List params, [Completer<String?>? next]) async {
-    Request req = params[0];
-    Response res = params[1];
+    Request req = params[1];
+    Response res = params[2];
     req as RequestInternal;
-    Future<dynamic> fn() async => await (next == null
-        ? _fn(params[0], params[1], params[2])
-        : _fn(params[0], params[1], params[2], next));
-    // dynamic result = await (req.threadId != null && req.threadPool != null
-    //     ? sendTask(req, fn)
-    //     : fn());
-    var result = await fn();
-    await processHandle(req, res, result);
+    await processHandle(req, res, Function.apply(_fn, [...params, next]));
   }
 
   @override
-  Future<void> _handleRequest(List params, [Completer<String?>? next]) async {
+  Future<void> _handleRequest(List params, Completer<String?> next) async {
     Request req = params[0];
     Response res = params[1];
     req as RequestInternal;
-
-    Future<dynamic> fn() async {
-      return await (next == null
-          ? _fn(params[0], params[1])
-          : _fn(params[0], params[1], next));
-    }
-
-    // dynamic result = await (req.threadId != null && req.threadPool != null
-    //     ? sendTask(req, fn)
-    //     : fn());
-    var result = await fn();
-    await processHandle(req, res, result);
+    await processHandle(req, res, Function.apply(_fn, [...params, next]));
   }
 
   Future<void> processHandle(Request req, Response res, dynamic result) async {
@@ -240,20 +223,6 @@ class WebSocketHandleLayer extends HandleLayer {
   WebSocketHandleLayer(String path, Function fn) : super(path, fn);
 
   @override
-  Future<void> _handleError(List params, [Completer<String?>? next]) async {
-    await (next == null
-        ? _fn(params[0], params[1], params[2])
-        : _fn(params[0], params[1], params[2], next));
-  }
-
-  @override
-  Future<void> _handleRequest(List params, [Completer<String?>? next]) async {
-    await (next == null
-        ? _fn(params[0], params[1])
-        : _fn(params[0], params[1], next));
-  }
-
-  @override
   bool _requestCondition() {
     return _fn is WebSocketHandler || _fn is WebSocketSimpleHandler;
   }
@@ -266,18 +235,6 @@ class WebSocketHandleLayer extends HandleLayer {
 
 class TCPHandleLayer extends HandleLayer {
   TCPHandleLayer(Function fn) : super('/', fn);
-
-  @override
-  Future<void> _handleError(List params, [Completer<String?>? next]) async {
-    await (next == null
-        ? _fn(params[0], params[1])
-        : _fn(params[0], params[1], next));
-  }
-
-  @override
-  Future<void> _handleRequest(List params, [Completer<String?>? next]) async {
-    await (next == null ? _fn(params[0]) : _fn(params[0], next));
-  }
 
   @override
   bool _errorCondition() {
@@ -294,18 +251,6 @@ class UDPHandleLayer extends HandleLayer {
   UDPHandleLayer(Function fn) : super('/', fn);
 
   @override
-  Future<void> _handleError(List params, [Completer<String?>? next]) async {
-    await (next == null
-        ? _fn(params[0], params[1])
-        : _fn(params[0], params[1], next));
-  }
-
-  @override
-  Future<void> _handleRequest(List params, [Completer<String?>? next]) async {
-    await (next == null ? _fn(params[0]) : _fn(params[0], next));
-  }
-
-  @override
   bool _errorCondition() {
     return _fn is UDPSocketErrorHandler || _fn is UDPSocketErrorSimpleHandler;
   }
@@ -318,20 +263,6 @@ class UDPHandleLayer extends HandleLayer {
 
 class HttpMiddlewareLayer extends HandleLayer {
   HttpMiddlewareLayer(String path, Function fn) : super(path, fn);
-
-  @override
-  Future<void> _handleError(List params, [Completer<String?>? next]) async {
-    await (next == null
-        ? _fn(params[0], params[1], params[2])
-        : _fn(params[0], params[1], params[2], next));
-  }
-
-  @override
-  Future<void> _handleRequest(List params, [Completer<String?>? next]) async {
-    await (next == null
-        ? _fn(params[0], params[1])
-        : _fn(params[0], params[1], next));
-  }
 
   @override
   bool _errorCondition() {

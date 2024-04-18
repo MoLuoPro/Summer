@@ -1,4 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:mime_type/mime_type.dart';
+import 'package:path/path.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:reflectable/reflectable.dart';
 import '../http/http.dart';
@@ -170,18 +175,6 @@ abstract class HandleLayer extends Layer {
 class HttpHandleLayer extends HandleLayer {
   HttpHandleLayer(String path, Function fn) : super(path, fn);
 
-  // Future<dynamic> sendTask(Request req, Function fn) async {
-  //   req as RequestInternal;
-  //   var port = req.threadPool!.sendPorts[req.threadId!];
-  //   port.send(Task(fn, port, req.threadId!).toMap());
-  //   await for (var result in req.threadPool!.streamController.stream) {
-  //     result as Result;
-  //     if (req.threadId == result.threadId) {
-  //       return result.data;
-  //     }
-  //   }
-  // }
-
   @override
   Future<void> _handleError(List params, [Completer<String?>? next]) async {
     Request req = params[1];
@@ -200,8 +193,35 @@ class HttpHandleLayer extends HandleLayer {
 
   Future<void> processHandle(Request req, Response res, dynamic result) async {
     if (result != null) {
-      if (result is List) {
+      if (result is List<int>) {
+        var bytes = ByteData(result.length * 4);
+        for (int i = 0; i < result.length; i++) {
+          bytes.setUint32(i * 4, result[i]);
+        }
+        res.headers.set('Content-Type', ContentType.binary.value);
+        res.sendAll(bytes.buffer.asUint8List());
+      } else if (result is List<dynamic>) {
         res.sendAll(result);
+        res.headers.set('Content-Type', ContentType.binary.value);
+      } else if (result is Stream<List<int>>) {
+        var list = await result.fold<List<int>>(
+            [], (previous, element) => previous..addAll(element));
+        res.sendAll(list);
+        res.headers.set('Content-Type', ContentType.binary.value);
+      } else if (result is Map<String, Object?>) {
+        res.send(jsonEncode(result));
+      } else if (result is File) {
+        var file = result;
+        if (await file.exists()) {
+          var fileName = basename(file.path);
+          var mimeType = mime(fileName) ?? ContentType.binary.value;
+          res.headers
+              .set('Content-Disposition', 'attachment; filename="$fileName"');
+          res.headers.set('Content-Type', mimeType);
+          res.sendAll(await file.readAsBytes());
+        } else {
+          throw FileSystemException('file dose not exists.', path);
+        }
       } else {
         res.send(result);
       }

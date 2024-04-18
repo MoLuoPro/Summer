@@ -12,10 +12,10 @@ HttpRouter _init() {
         var user = await req.body;
         var json = jsonEncode(user);
         print(json);
-        res.sendStatus(200);
+        res.statusCode = 200;
         res.send(json);
       } catch (err) {
-        res.sendStatus(500);
+        res.statusCode = 500;
         res.send('Username or password is incorrect !');
       }
     }

@@ -93,6 +93,7 @@ class Response {
   Response(this._inner);
 
   int get statusCode => _inner.statusCode;
+  set statusCode(value) => _inner.statusCode = value;
   HttpHeaders get headers => _inner.headers;
   List<Cookie> get cookies => _inner.cookies;
   Encoding get encoding => _inner.encoding;
@@ -101,11 +102,6 @@ class Response {
   Future<dynamic> redirect(Uri location,
           {int status = HttpStatus.movedTemporarily}) =>
       _inner.redirect(location, status: status);
-
-  Response sendStatus(int statusCode) {
-    _inner.statusCode = statusCode;
-    return this;
-  }
 
   Response json(Map<String, dynamic> data) {
     _inner.write(jsonEncode(data));

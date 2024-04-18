@@ -8,7 +8,7 @@ void main(List<String> arguments) {
       next.complete();
     },
     (req, res, next) {
-      return 'test finished';
+      return [5, 6, 87, 1, 324, 561, 354, 651, 65];
     }
   ]);
   app.listen(httpPort: 4000);

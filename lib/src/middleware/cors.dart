@@ -98,7 +98,7 @@ HttpHandler cors([Map<String, dynamic>? options]) {
         if (preflightContinue) {
           next.complete();
         } else {
-          res.sendStatus(optionsSuccessStatus);
+          res.statusCode = optionsSuccessStatus;
           res.headers.set('Content-Length', '0');
           await res.close();
         }

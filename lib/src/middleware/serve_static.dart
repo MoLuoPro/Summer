@@ -29,6 +29,6 @@ Future<void> _getFile(Request req, Response res, File file) async {
   mimeType = mimeType ?? 'application/octet-stream';
   var content = await file.readAsString();
   res.headers.set('Content-Type', mimeType);
-  res.sendStatus(200);
+  res.statusCode = 200;
   res.send(content);
 }

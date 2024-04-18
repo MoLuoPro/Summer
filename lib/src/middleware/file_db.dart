@@ -39,7 +39,7 @@ Future<void> _getDirectory(
     }
     html += '</ul></body></html>';
     res.headers.contentType = ContentType.html;
-    res.sendStatus(200);
+    res.statusCode = 200;
     res.send(html);
   } else {
     throw Exception('Directory dose not exists.');
@@ -51,7 +51,7 @@ Future<void> _getFile(Request req, Response res, File file) async {
     var fileName = basename(file.path);
     var mimeType = mime(fileName);
     mimeType = mimeType ?? 'application/octet-stream';
-    res.sendStatus(200);
+    res.statusCode = 200;
     res.headers.set('Content-Disposition', 'attachment; filename="$fileName"');
     res.headers.set('Content-Type', mimeType);
     res.sendAll(await file.readAsBytes());

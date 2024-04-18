@@ -7,10 +7,10 @@ import 'http/http.dart';
 
 class Application with Server, RequestHandler {
   final Map<String, dynamic> _settings = {};
-  WebSocketRouter? _webSocketRouter;
-  HttpRouter? _httpRouter;
-  TCPRouter? _tcpRouter;
-  UDPRouter? _udpRouter;
+  WebSocketRouterInternal? _webSocketRouter;
+  HttpRouterInternal? _httpRouter;
+  TCPRouterInternal? _tcpRouter;
+  UDPRouterInternal? _udpRouter;
 
   @override
   Future<void> listen({int? httpPort, int? tcpPort, int? udpPort}) {
@@ -160,7 +160,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  RequestHandler get(String path, List<Function> callbacks) {
+  Application get(String path, List<HttpHandler> callbacks) {
     void get() async {
       await _lazyRouter();
       await _checkServerConnection();
@@ -175,7 +175,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  RequestHandler post(String path, List<Function> callbacks) {
+  Application post(String path, List<HttpHandler> callbacks) {
     void post() async {
       await _lazyRouter();
       await _checkServerConnection();
@@ -190,7 +190,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  RequestHandler delete(String path, List<Function> callbacks) {
+  Application delete(String path, List<HttpHandler> callbacks) {
     void delete() async {
       await _lazyRouter();
       await _checkServerConnection();
@@ -205,7 +205,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  HttpMethod head(String path, List<Function> callbacks) {
+  Application head(String path, List<HttpHandler> callbacks) {
     void head() async {
       await _lazyRouter();
       await _checkServerConnection();
@@ -220,7 +220,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  HttpMethod options(String path, List<Function> callbacks) {
+  Application options(String path, List<HttpHandler> callbacks) {
     void options() async {
       await _lazyRouter();
       await _checkServerConnection();
@@ -235,7 +235,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  HttpMethod patch(String path, List<Function> callbacks) {
+  Application patch(String path, List<HttpHandler> callbacks) {
     void patch() async {
       await _lazyRouter();
       await _checkServerConnection();
@@ -250,7 +250,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  HttpMethod put(String path, List<Function> callbacks) {
+  Application put(String path, List<HttpHandler> callbacks) {
     void put() async {
       await _lazyRouter();
       await _checkServerConnection();
@@ -264,7 +264,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
-  RequestHandler all(String path, List<Function> callbacks) {
+  Application all(String path, List<HttpHandler> callbacks) {
     void all() async {
       await _lazyRouter();
       await _checkServerConnection();
@@ -281,7 +281,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  WebSocketMethod ws(String path, List<Function> callbacks) {
+  WebSocketMethod ws(String path, List<WebSocketHandler> callbacks) {
     void ws() async {
       await _lazyRouter();
       await _checkServerConnection();
@@ -296,7 +296,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  void tcp(List<Function> callbacks) {
+  void tcp(List<TCPSocketHandler> callbacks) {
     void tcp() async {
       await _lazyRouter();
       await _checkTCPConnection();
@@ -310,7 +310,7 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  void udp(List<Function> callbacks) {
+  void udp(List<UDPSocketHandler> callbacks) {
     udp() async {
       await _lazyRouter();
       await _checkUDPConnection();

@@ -2,8 +2,12 @@ import 'package:summer/summer.dart';
 
 void main(List<String> arguments) {
   var app = createApp();
+
   app.get('/test', [
-    (Request req, Response res) {
+    (req, res, next) {
+      next.complete();
+    },
+    (req, res, next) {
       return 'test finished';
     }
   ]);

@@ -3,7 +3,7 @@ import 'package:summer/summer.dart';
 void main(List<String> arguments) {
   var app = createApp();
   app.get('/test', [
-    (Request req, Response res) async {
+    (req, res, next) async {
       print(await req.body);
     }
   ]);

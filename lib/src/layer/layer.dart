@@ -1,12 +1,17 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:path_to_regexp/path_to_regexp.dart';
+import 'package:reflectable/reflectable.dart';
 import '../http/http.dart';
 
 import '../router/router.dart';
 
+const methodReflectable = MethodReflectable();
+
 /// 对中间件以及路由的封装
+@methodReflectable
 abstract class Layer {
   late String name;
   late String _path;
@@ -88,11 +93,6 @@ class RouteLayer extends HandleLayer {
   bool _errorCondition() {
     return true;
   }
-
-  @override
-  bool _isSimple(List params) {
-    return false;
-  }
 }
 
 class HttpRouteLayer extends RouteLayer {
@@ -116,7 +116,6 @@ abstract class HandleLayer extends Layer {
 
   bool _requestCondition();
   bool _errorCondition();
-  bool _isSimple(List params);
 
   Future<void> _handleError(List params, [Completer<String?> next]);
 
@@ -126,12 +125,7 @@ abstract class HandleLayer extends Layer {
       List<dynamic> params, Completer<String?> next) async {
     try {
       if (_requestCondition()) {
-        if (_isSimple(params)) {
-          await _handleRequest(params);
-          next.complete();
-        } else {
-          await _handleRequest(params, next);
-        }
+        await _handleRequest(params, next);
       } else {
         next.complete();
       }
@@ -154,20 +148,14 @@ abstract class HandleLayer extends Layer {
       List<dynamic> params, Completer<String?> next) async {
     try {
       if (_errorCondition()) {
-        if (_isSimple(params)) {
-          await _handleError(params);
-          next.complete();
-        } else {
-          await _handleError(params, next);
-        }
+        await _handleError(params, next);
       } else {
         next.complete(params[0]);
       }
     } catch (err) {
+      print(err);
       if (err is Error) {
         print(err.stackTrace);
-      } else {
-        print(err);
       }
       next.complete(err.toString());
     } finally {
@@ -246,13 +234,6 @@ class HttpHandleLayer extends HandleLayer {
   bool _errorCondition() {
     return _fn is HttpErrorHandler || _fn is HttpErrorSimpleHandler;
   }
-
-  @override
-  bool _isSimple(List params) {
-    // HttpSimpleHandler || HttpErrorSimpleHandler
-    return (params.length == 2 && params[0] is Request) ||
-        (params.length == 3 && params[0] is String?);
-  }
 }
 
 class WebSocketHandleLayer extends HandleLayer {
@@ -281,13 +262,6 @@ class WebSocketHandleLayer extends HandleLayer {
   bool _errorCondition() {
     return _fn is WebSocketErrorHandler || _fn is WebSocketErrorSimpleHandler;
   }
-
-  @override
-  bool _isSimple(List params) {
-    //_fn is WebSocketSimpleHandler || _fn is WebSocketErrorSimpleHandler
-    return (params.length == 2 && params[0] is Request) ||
-        (params.length == 3 && params[0] is String?);
-  }
 }
 
 class TCPHandleLayer extends HandleLayer {
@@ -314,13 +288,6 @@ class TCPHandleLayer extends HandleLayer {
   bool _requestCondition() {
     return _fn is TCPSocketHandler || _fn is TCPSocketSimpleHandler;
   }
-
-  @override
-  bool _isSimple(List params) {
-    // TCPSocketSimpleHandler || TCPSocketErrorSimpeHandler
-    return (params.length == 1 && params[0] is Socket) ||
-        (params.length == 2 && params[0] is String?);
-  }
 }
 
 class UDPHandleLayer extends HandleLayer {
@@ -346,13 +313,6 @@ class UDPHandleLayer extends HandleLayer {
   @override
   bool _requestCondition() {
     return _fn is UDPSocketHandler || _fn is UDPSocketSimpleHandler;
-  }
-
-  @override
-  bool _isSimple(List params) {
-    // UDPSocketSimpleHandler || UDPSocketErrorSimpleHandler;
-    return (params.length == 1 && params[0] is RawDatagramSocket) ||
-        (params.length == 2 && params[0] is String?);
   }
 }
 
@@ -381,12 +341,6 @@ class HttpMiddlewareLayer extends HandleLayer {
   @override
   bool _requestCondition() {
     return _fn is HttpHandler || _fn is HttpSimpleHandler;
-  }
-
-  @override
-  bool _isSimple(List params) {
-    return (params.length == 2 && params[0] is Request) ||
-        (params.length == 3 && params[0] is String?);
   }
 }
 
@@ -455,4 +409,10 @@ class RegExpUtils {
     }
     return [];
   }
+}
+
+class MethodReflectable extends Reflectable {
+  const MethodReflectable()
+      : super(invokingCapability, typeRelationsCapability,
+            reflectedTypeCapability);
 }

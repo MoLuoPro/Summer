@@ -9,7 +9,7 @@ import '../http/http.dart';
 fileDB(String path) {
   var baseUri = Directory.current.uri.resolve(path);
   var baseDir = Directory.fromUri(baseUri);
-  return (Request req, Response res, Completer<String?> next) async {
+  return (Request req, Response res, Completer<String?>? next) async {
     res as ResponseInternal;
     if (req.method == HttpMethod.httpGet) {
       var uri = baseDir.uri.resolve(req.uri.path.substring(1));

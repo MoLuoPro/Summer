@@ -84,26 +84,26 @@ abstract class HttpMethod {
     httpOptions
   ];
 
-  HttpMethod get(String uri, List<Function> callbacks);
-  HttpMethod post(String uri, List<Function> callbacks);
-  HttpMethod put(String uri, List<Function> callbacks);
-  HttpMethod patch(String uri, List<Function> callbacks);
-  HttpMethod delete(String uri, List<Function> callbacks);
-  HttpMethod head(String uri, List<Function> callbacks);
-  HttpMethod options(String uri, List<Function> callbacks);
+  HttpMethod get(String uri, List<HttpHandler> callbacks);
+  HttpMethod post(String uri, List<HttpHandler> callbacks);
+  HttpMethod put(String uri, List<HttpHandler> callbacks);
+  HttpMethod patch(String uri, List<HttpHandler> callbacks);
+  HttpMethod delete(String uri, List<HttpHandler> callbacks);
+  HttpMethod head(String uri, List<HttpHandler> callbacks);
+  HttpMethod options(String uri, List<HttpHandler> callbacks);
 }
 
 abstract class WebSocketMethod {
   static const String name = 'WEB_SOCKET';
-  WebSocketMethod ws(String uri, List<Function> callbacks);
+  WebSocketMethod ws(String uri, List<WebSocketHandler> callbacks);
 }
 
 abstract class TCPMethod {
   static const String name = 'TCP';
-  void tcp(List<Function> callbacks);
+  void tcp(List<TCPSocketHandler> callbacks);
 }
 
 abstract class UDPMethod {
   static const String name = 'UDP';
-  void udp(List<Function> callbacks);
+  void udp(List<UDPSocketHandler> callbacks);
 }

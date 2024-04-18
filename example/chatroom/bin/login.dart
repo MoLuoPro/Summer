@@ -8,7 +8,7 @@ HttpRouter login = _init();
 HttpRouter _init() {
   login = httpRouter();
   login.post('/login', [
-    (Request req, Response res, Completer<String?> next) async {
+    (req, res, next) async {
       try {
         var user = await req.body;
         var json = jsonEncode(user);

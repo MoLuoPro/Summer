@@ -2,12 +2,12 @@ import 'package:summer/summer.dart';
 
 void main(List<String> arguments) {
   var app = createApp();
-  var corsOptions = {'origin': 'http://localhost:4200'};
-  app.use(path: '*', fns: [cors(corsOptions)]);
-  app.get('/test', [
+  var router = httpRouter();
+  router.get('/test', [
     (req, res, next) {
-      print('test');
+      return 'test';
     }
   ]);
+  app.useHttpRouter(path: '/index', router: router);
   app.listen(httpPort: 4000);
 }

@@ -6,7 +6,6 @@ import 'dart:io';
 
 import 'package:mime_type/mime_type.dart';
 import 'package:path/path.dart';
-import 'package:summer/src/middleware/smart_balancer.dart';
 
 part './request_handler.dart';
 part './methods.dart';
@@ -82,8 +81,6 @@ class Request {
 class RequestInternal extends Request {
   HttpRequest get inner => _inner;
   WebSocket? ws;
-  int? threadId;
-  ThreadPool? threadPool;
   RequestInternal(HttpRequest inner) : super(inner);
   String get baseUrl => _baseUrl;
   set baseUrl(value) => _baseUrl = value;

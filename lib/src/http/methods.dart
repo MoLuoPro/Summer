@@ -54,6 +54,17 @@ typedef WebSocketParamHandler = FutureOr<void> Function(Request req,
 typedef WebSocketParamSimpleHandler = FutureOr<void> Function(
     Request req, WebSocket ws, String val, String name);
 
+class Runnable<T> {
+  final T _handle;
+  late final List _args;
+  Runnable(this._handle, this._args);
+}
+
+execute<T>(Runnable<T> runnable) {
+  var handle = runnable._handle as Function;
+  return Function.apply(handle, runnable._args);
+}
+
 abstract class HttpMethod {
   static const String httpAll = 'ALL';
   static const String httpGet = 'GET';

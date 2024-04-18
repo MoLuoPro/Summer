@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:path_to_regexp/path_to_regexp.dart';
-import 'package:summer/src/middleware/smart_balancer.dart';
 import '../http/http.dart';
 
 import '../router/router.dart';
@@ -90,7 +90,7 @@ class RouteLayer extends HandleLayer {
   }
 
   @override
-  bool _isSimple() {
+  bool _isSimple(List params) {
     return false;
   }
 }
@@ -116,7 +116,7 @@ abstract class HandleLayer extends Layer {
 
   bool _requestCondition();
   bool _errorCondition();
-  bool _isSimple();
+  bool _isSimple(List params);
 
   Future<void> _handleError(List params, [Completer<String?> next]);
 
@@ -126,7 +126,7 @@ abstract class HandleLayer extends Layer {
       List<dynamic> params, Completer<String?> next) async {
     try {
       if (_requestCondition()) {
-        if (_isSimple()) {
+        if (_isSimple(params)) {
           await _handleRequest(params);
           next.complete();
         } else {
@@ -154,7 +154,7 @@ abstract class HandleLayer extends Layer {
       List<dynamic> params, Completer<String?> next) async {
     try {
       if (_errorCondition()) {
-        if (_isSimple()) {
+        if (_isSimple(params)) {
           await _handleError(params);
           next.complete();
         } else {
@@ -181,19 +181,17 @@ abstract class HandleLayer extends Layer {
 class HttpHandleLayer extends HandleLayer {
   HttpHandleLayer(String path, Function fn) : super(path, fn);
 
-  Future<dynamic> sendTask(Request req, Function fn) async {
-    req as RequestInternal;
-    Completer<String?>? completer = Completer();
-    var port = req.threadPool!.sendPorts[req.threadId!];
-    port.send(Task(fn, completer, port, req.threadId!));
-    await completer.future;
-    await for (var result in req.threadPool!.streamController.stream) {
-      result as Result;
-      if (req.threadId == result.threadId) {
-        return result.data;
-      }
-    }
-  }
+  // Future<dynamic> sendTask(Request req, Function fn) async {
+  //   req as RequestInternal;
+  //   var port = req.threadPool!.sendPorts[req.threadId!];
+  //   port.send(Task(fn, port, req.threadId!).toMap());
+  //   await for (var result in req.threadPool!.streamController.stream) {
+  //     result as Result;
+  //     if (req.threadId == result.threadId) {
+  //       return result.data;
+  //     }
+  //   }
+  // }
 
   @override
   Future<void> _handleError(List params, [Completer<String?>? next]) async {
@@ -203,9 +201,10 @@ class HttpHandleLayer extends HandleLayer {
     Future<dynamic> fn() async => await (next == null
         ? _fn(params[0], params[1], params[2])
         : _fn(params[0], params[1], params[2], next));
-    dynamic result = await (req.threadId != null && req.threadPool != null
-        ? sendTask(req, fn)
-        : fn());
+    // dynamic result = await (req.threadId != null && req.threadPool != null
+    //     ? sendTask(req, fn)
+    //     : fn());
+    var result = await fn();
     await processHandle(req, res, result);
   }
 
@@ -221,9 +220,10 @@ class HttpHandleLayer extends HandleLayer {
           : _fn(params[0], params[1], next));
     }
 
-    dynamic result = await (req.threadId != null && req.threadPool != null
-        ? sendTask(req, fn)
-        : fn());
+    // dynamic result = await (req.threadId != null && req.threadPool != null
+    //     ? sendTask(req, fn)
+    //     : fn());
+    var result = await fn();
     await processHandle(req, res, result);
   }
 
@@ -248,8 +248,10 @@ class HttpHandleLayer extends HandleLayer {
   }
 
   @override
-  bool _isSimple() {
-    return _fn is HttpSimpleHandler || _fn is HttpErrorSimpleHandler;
+  bool _isSimple(List params) {
+    // HttpSimpleHandler || HttpErrorSimpleHandler
+    return (param.length == 2 && params[0] is Request) ||
+        (param.length == 3 && params[0] is String?);
   }
 }
 
@@ -281,8 +283,10 @@ class WebSocketHandleLayer extends HandleLayer {
   }
 
   @override
-  bool _isSimple() {
-    return _fn is WebSocketSimpleHandler || _fn is WebSocketErrorSimpleHandler;
+  bool _isSimple(List params) {
+    //_fn is WebSocketSimpleHandler || _fn is WebSocketErrorSimpleHandler
+    return (param.length == 2 && params[0] is Request) ||
+        (param.length == 3 && params[0] is String?);
   }
 }
 
@@ -312,8 +316,10 @@ class TCPHandleLayer extends HandleLayer {
   }
 
   @override
-  bool _isSimple() {
-    return _fn is TCPSocketSimpleHandler || _fn is TCPSocketErrorSimpeHandler;
+  bool _isSimple(List params) {
+    // TCPSocketSimpleHandler || TCPSocketErrorSimpeHandler
+    return (param.length == 1 && params[0] is Socket) ||
+        (param.length == 2 && params[0] is String?);
   }
 }
 
@@ -343,8 +349,10 @@ class UDPHandleLayer extends HandleLayer {
   }
 
   @override
-  bool _isSimple() {
-    return _fn is UDPSocketSimpleHandler || _fn is UDPSocketErrorSimpleHandler;
+  bool _isSimple(List params) {
+    // UDPSocketSimpleHandler || UDPSocketErrorSimpleHandler;
+    return (param.length == 1 && params[0] is RawDatagramSocket) ||
+        (param.length == 2 && params[0] is String?);
   }
 }
 
@@ -376,8 +384,9 @@ class HttpMiddlewareLayer extends HandleLayer {
   }
 
   @override
-  bool _isSimple() {
-    return _fn is HttpSimpleHandler || _fn is HttpErrorSimpleHandler;
+  bool _isSimple(List params) {
+    return (param.length == 2 && params[0] is Request) ||
+        (param.length == 3 && params[0] is String?);
   }
 }
 

@@ -1,8 +1,7 @@
 ## Summer
-Powerful Server Framework behind Spring  
+优雅而强大的Dart Web框架。借鉴了Express.js等开源库，使用Dart语言编写，支持路由管理，中间件，静态文件托管，以及各种常用的功能。  
 
-## 例子
-#### 简单的例子
+### 简单的例子
 ``` dart
 import 'package:summer/summer.dart';
 
@@ -20,7 +19,7 @@ createApp()创建应用实例</br>
 app.get定义一个get请求,'/test'为路径,后面的回调函数负责执行业务逻辑.</br>
 app.listen(httpPort: 4000);启动服务器并监听4000端口.
 
-#### 中间件
+### 中间件
 ```dart
 import 'package:summer/summer.dart';
 
@@ -38,7 +37,7 @@ void main(List<String> arguments) {
 ```
 以cors中间件为例,cors()会返回函数,使用app.use(fns: [cors(corsOptions)])就可将中间件注册.
 
-#### 路由管理器
+### 路由管理器
 ```dart
 import 'package:summer/summer.dart';
 
@@ -56,7 +55,7 @@ void main(List<String> arguments) {
 ```
 创建路由管理器,并使用app.useHttpRouter将路由管理器注册进应用,访问接口的路径为/index/test
 
-#### 文件系统
+### 文件系统
 ``` dart
 import 'package:summer/summer.dart';
 
@@ -68,7 +67,7 @@ void main(List<String> arguments) {
 ```
 引入fileDB中间件,输入"http://localhost:4000"即可访问files文件夹.
 
-#### 静态资源服务
+### 静态资源服务
 ``` dart
 import 'package:summer/summer.dart';
 
@@ -80,7 +79,7 @@ void main(List<String> arguments) {
 ```
 引入serveStatic中间件,输入"http://localhost:4000"即可访问htmls文件夹下的静态资源.
 
-#### 下载
+### 下载
 ``` dart
 import 'package:summer/summer.dart';
 
@@ -109,7 +108,7 @@ app.listen(httpPort: 4000);
 回调函数中的next类似于express的next,只不过summer是调用next.complete()来继续执行函数的.
 最后调用app.listen开启服务器.
 
-同时也支持websocket.
+### 支持websocket
 ``` dart
 import 'package:summer/summer.dart';
 
@@ -124,8 +123,9 @@ void main(List<String> arguments) {
   ]);
   app.listen(httpPort: 4000);
 }
-```
-以及tcp,udp
+``` 
+
+### tcp,udp
 ``` dart
 import 'dart:io';
 

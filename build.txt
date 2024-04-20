@@ -1,0 +1,21 @@
+# 遍历 public 目录并将其中的文件的换行符从 CRLF 转换为 LF
+
+# 设置要处理的目录路径
+$directory = "doc/public"
+
+# 获取目录中所有文件
+$files = Get-ChildItem -Path $directory -File -Recurse
+
+# 遍历每个文件并将 CRLF 转换为 LF
+foreach ($file in $files) {
+    # 读取文件内容
+    $content = Get-Content $file.FullName -Raw
+
+    # 将 CRLF 转换为 LF
+    $content = $content -replace "\r\n", "`n"
+
+    # 将修改后的内容写回文件
+    Set-Content -Path $file.FullName -Value $content
+}
+
+Write-Host "换行符转换完成！"

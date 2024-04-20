@@ -2,88 +2,89 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/zh/</loc>
+    <loc>/zh/</loc>
+    <lastmod>2024-04-20T21:06:02+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://localhost:1313/"
+                href="/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="http://localhost:1313/zh/"
+                href="/zh/"
                 />
   </url><url>
-    <loc>http://localhost:1313/zh/section/%E7%AB%A0%E8%8A%821/</loc>
+    <loc>/zh/section/%E7%AB%A0%E8%8A%821/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://localhost:1313/section/%E7%AB%A0%E8%8A%821/"
+                href="/section/%E7%AB%A0%E8%8A%821/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="http://localhost:1313/zh/section/%E7%AB%A0%E8%8A%821/"
+                href="/zh/section/%E7%AB%A0%E8%8A%821/"
                 />
   </url><url>
-    <loc>http://localhost:1313/zh/section/%E7%AB%A0%E8%8A%822/</loc>
+    <loc>/zh/section/%E7%AB%A0%E8%8A%822/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://localhost:1313/section/%E7%AB%A0%E8%8A%822/"
+                href="/section/%E7%AB%A0%E8%8A%822/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="http://localhost:1313/zh/section/%E7%AB%A0%E8%8A%822/"
+                href="/zh/section/%E7%AB%A0%E8%8A%822/"
                 />
   </url><url>
-    <loc>http://localhost:1313/zh/section/%E7%AB%A0%E8%8A%823/</loc>
+    <loc>/zh/section/%E7%AB%A0%E8%8A%823/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://localhost:1313/section/%E7%AB%A0%E8%8A%823/"
+                href="/section/%E7%AB%A0%E8%8A%823/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="http://localhost:1313/zh/section/%E7%AB%A0%E8%8A%823/"
+                href="/zh/section/%E7%AB%A0%E8%8A%823/"
                 />
   </url><url>
-    <loc>http://localhost:1313/zh/categories/</loc>
+    <loc>/zh/categories/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://localhost:1313/categories/"
+                href="/categories/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="http://localhost:1313/zh/categories/"
+                href="/zh/categories/"
                 />
   </url><url>
-    <loc>http://localhost:1313/zh/section/</loc>
+    <loc>/zh/section/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://localhost:1313/section/"
+                href="/section/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="http://localhost:1313/zh/section/"
+                href="/zh/section/"
                 />
   </url><url>
-    <loc>http://localhost:1313/zh/tags/</loc>
+    <loc>/zh/tags/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="http://localhost:1313/tags/"
+                href="/tags/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="http://localhost:1313/zh/tags/"
+                href="/zh/tags/"
                 />
   </url>
 </urlset>

@@ -1,4 +1,4 @@
-baseURL = 'https://moluopro.gitee.io/summer'
+baseURL = '/'
 title = 'Summer'
 theme = 'book'
 

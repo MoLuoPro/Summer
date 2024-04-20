@@ -125,7 +125,7 @@ void main(List<String> arguments) {
   app.listen(httpPort: 4000);
 }
 ```
-也支持tcp,udp
+以及tcp,udp
 ``` dart
 import 'dart:io';
 

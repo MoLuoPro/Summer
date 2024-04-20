@@ -5,15 +5,11 @@ import 'dart:typed_data';
 import 'package:mime_type/mime_type.dart';
 import 'package:path/path.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
-import 'package:reflectable/reflectable.dart';
 import '../http/http.dart';
 
 import '../router/router.dart';
 
-const methodReflectable = MethodReflectable();
-
 /// 对中间件以及路由的封装
-@methodReflectable
 abstract class Layer {
   late String name;
   late String _path;
@@ -360,10 +356,4 @@ class RegExpUtils {
     }
     return [];
   }
-}
-
-class MethodReflectable extends Reflectable {
-  const MethodReflectable()
-      : super(invokingCapability, typeRelationsCapability,
-            reflectedTypeCapability);
 }

@@ -296,28 +296,24 @@ class Application with Server, RequestHandler {
   }
 
   @override
-  void tcp(List<TCPSocketHandler> callbacks) {
+  void tcp(TCPSocketHandler callback) {
     void tcp() async {
       await _lazyRouter();
       await _checkTCPConnection();
       var route = _tcpRouter?.route('/');
-      for (var cb in callbacks) {
-        route?.request(TCPMethod.name, cb);
-      }
+      route?.request(TCPMethod.name, callback);
     }
 
     tcp();
   }
 
   @override
-  void udp(List<UDPSocketHandler> callbacks) {
+  void udp(UDPSocketHandler callback) {
     udp() async {
       await _lazyRouter();
       await _checkUDPConnection();
       var route = _udpRouter?.route('');
-      for (var cb in callbacks) {
-        route?.request(UDPMethod.name, cb);
-      }
+      route?.request(UDPMethod.name, callback);
     }
 
     udp();

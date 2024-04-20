@@ -9,7 +9,7 @@ import 'package:summer/summer.dart';
 void main(List<String> arguments) {
   var app = createApp();
   app.get('/test', [
-    (Request req, Response res) {
+    (req, res, next) {
       return 'test finished';
     }
   ]);
@@ -29,7 +29,7 @@ void main(List<String> arguments) {
   var corsOptions = {'origin': 'http://localhost:4200'};
   app.use(fns: [cors(corsOptions)]);
   app.get('/test', [
-    (Request req, Response res) {
+    (req, res, next) {
       print('test');
     }
   ]);
@@ -46,7 +46,7 @@ void main(List<String> arguments) {
   var app = createApp();
   var router = httpRouter();
   router.get('/test', [
-    (Request req, Response res) {
+    (req, res, next) {
       return 'test';
     }
   ]);
@@ -95,3 +95,64 @@ void main(List<String> arguments) {
 }
 ```
 调用res.downloadFile('files/file.txt');前端会下载该文件.
+
+API:
+http请求
+``` dart
+import 'package:summer/summer.dart';
+
+var app = createApp();
+app.get('/path', [(req, res, next) => next.complete(), (req, res, next) => 'test']);
+app.listen(httpPort: 4000);
+```
+引入summer包后,需要调用createApp创建应用,然后可以调用app.get(http方法),输入路径以及回调函数.
+回调函数中的next类似于express的next,只不过summer是调用next.complete()来继续执行函数的.
+最后调用app.listen开启服务器.
+
+同时也支持websocket.
+``` dart
+import 'package:summer/summer.dart';
+
+void main(List<String> arguments) {
+  var app = createApp();
+  app.ws('webSocket', [
+    (req, ws, next) {
+      ws.listen((event) {
+        print(event);
+      });
+    }
+  ]);
+  app.listen(httpPort: 4000);
+}
+```
+也支持tcp,udp
+``` dart
+import 'dart:io';
+
+import 'package:summer/summer.dart';
+
+void main(List<String> arguments) {
+  var app = createApp();
+  app.tcp((socket, next) {
+    socket.listen((event) {
+      print(event);
+    });
+  });
+  app.udp((socket, next) {
+    socket.listen((event) {
+      if (event == RawSocketEvent.read) {
+        var data = socket.receive();
+        if (data != null) {
+          print(data.data);
+        }
+      }
+    });
+  });
+  app.listen(tcpPort: 4000, udpPort: 5000);
+}
+```
+
+``` dart
+app.use(path: '/', fns:[...]);
+```
+app.use用来注册中间件,传递一个Handler函数数组,目前仅支持HttpHandler.path为可选值,符合该路径才调用.

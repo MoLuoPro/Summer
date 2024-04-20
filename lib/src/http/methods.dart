@@ -34,15 +34,15 @@ typedef TCPSocketErrorSimpeHandler = FutureOr<void> Function(
 typedef TCPSocketFinalHandle = void Function(Socket client, String? err);
 
 typedef UDPSocketHandler = FutureOr<void> Function(
-    RawDatagramSocket client, Completer<String?> next);
+    RawDatagramSocket socket, Completer<String?> next);
 typedef UDPSocketSimpleHandler = FutureOr<void> Function(
-    RawDatagramSocket client, Completer<String?> next);
+    RawDatagramSocket socket, Completer<String?> next);
 typedef UDPSocketErrorHandler = FutureOr<void> Function(
-    String? err, RawDatagramSocket client, Completer<String?> next);
+    String? err, RawDatagramSocket socket, Completer<String?> next);
 typedef UDPSocketErrorSimpleHandler = FutureOr<void> Function(
-    String? err, RawDatagramSocket client);
+    String? err, RawDatagramSocket socket);
 typedef UDPSocketFinalHandle = void Function(
-    RawDatagramSocket client, String? err);
+    RawDatagramSocket socket, String? err);
 
 typedef ParamHandler = FutureOr<void> Function(Request req, Response res,
     String val, String name, Completer<String?> next);
@@ -100,10 +100,10 @@ abstract class WebSocketMethod {
 
 abstract class TCPMethod {
   static const String name = 'TCP';
-  void tcp(List<TCPSocketHandler> callbacks);
+  void tcp(TCPSocketHandler callback);
 }
 
 abstract class UDPMethod {
   static const String name = 'UDP';
-  void udp(List<UDPSocketHandler> callbacks);
+  void udp(UDPSocketHandler callback);
 }

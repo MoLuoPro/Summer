@@ -7,12 +7,13 @@ import '../http/http.dart';
 
 /// 静态服务中间件
 fileDB(String path) {
-  var baseUri = Directory.current.uri.resolve(path);
-  var baseDir = Directory.fromUri(baseUri);
+  // var baseUri = Directory.current.uri.resolve(path);
+  // var baseDir = Directory.fromUri(baseUri);
+  var baseDir = Directory.current;
   return (Request req, Response res, Completer<String?>? next) async {
     res as ResponseInternal;
     if (req.method == HttpMethod.httpGet) {
-      var uri = baseDir.uri.resolve(req.uri.path.substring(1));
+      var uri = baseDir.uri.resolve(path + req.uri.path);
       var file = File.fromUri(uri);
       var dir = Directory.fromUri(uri);
       if (await file.exists()) {

@@ -2,89 +2,89 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>/zh/</loc>
+    <loc>https://moluopro.gitee.io/summer/zh/</loc>
     <lastmod>2024-04-20T21:06:02+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="/"
+                href="https://moluopro.gitee.io/summer/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="/zh/"
+                href="https://moluopro.gitee.io/summer/zh/"
                 />
   </url><url>
-    <loc>/zh/section/%E7%AB%A0%E8%8A%821/</loc>
+    <loc>https://moluopro.gitee.io/summer/zh/section/%E7%AB%A0%E8%8A%821/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="/section/%E7%AB%A0%E8%8A%821/"
+                href="https://moluopro.gitee.io/summer/section/%E7%AB%A0%E8%8A%821/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="/zh/section/%E7%AB%A0%E8%8A%821/"
+                href="https://moluopro.gitee.io/summer/zh/section/%E7%AB%A0%E8%8A%821/"
                 />
   </url><url>
-    <loc>/zh/section/%E7%AB%A0%E8%8A%822/</loc>
+    <loc>https://moluopro.gitee.io/summer/zh/section/%E7%AB%A0%E8%8A%822/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="/section/%E7%AB%A0%E8%8A%822/"
+                href="https://moluopro.gitee.io/summer/section/%E7%AB%A0%E8%8A%822/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="/zh/section/%E7%AB%A0%E8%8A%822/"
+                href="https://moluopro.gitee.io/summer/zh/section/%E7%AB%A0%E8%8A%822/"
                 />
   </url><url>
-    <loc>/zh/section/%E7%AB%A0%E8%8A%823/</loc>
+    <loc>https://moluopro.gitee.io/summer/zh/section/%E7%AB%A0%E8%8A%823/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="/section/%E7%AB%A0%E8%8A%823/"
+                href="https://moluopro.gitee.io/summer/section/%E7%AB%A0%E8%8A%823/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="/zh/section/%E7%AB%A0%E8%8A%823/"
+                href="https://moluopro.gitee.io/summer/zh/section/%E7%AB%A0%E8%8A%823/"
                 />
   </url><url>
-    <loc>/zh/categories/</loc>
+    <loc>https://moluopro.gitee.io/summer/zh/categories/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="/categories/"
+                href="https://moluopro.gitee.io/summer/categories/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="/zh/categories/"
+                href="https://moluopro.gitee.io/summer/zh/categories/"
                 />
   </url><url>
-    <loc>/zh/section/</loc>
+    <loc>https://moluopro.gitee.io/summer/zh/section/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="/section/"
+                href="https://moluopro.gitee.io/summer/section/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="/zh/section/"
+                href="https://moluopro.gitee.io/summer/zh/section/"
                 />
   </url><url>
-    <loc>/zh/tags/</loc>
+    <loc>https://moluopro.gitee.io/summer/zh/tags/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="/tags/"
+                href="https://moluopro.gitee.io/summer/tags/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="/zh/tags/"
+                href="https://moluopro.gitee.io/summer/zh/tags/"
                 />
   </url>
 </urlset>

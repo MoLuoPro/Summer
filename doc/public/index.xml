@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Summer</title>
+    <title>文档 on Summer</title>
     <link>https://moluopro.gitee.io/summer/</link>
-    <description>Recent content on Summer</description>
+    <description>Recent content in 文档 on Summer</description>
     <generator>Hugo 0.125.1</generator>
     <language>en</language>
     <atom:link href="https://moluopro.gitee.io/summer/index.xml" rel="self" type="application/rss+xml" />

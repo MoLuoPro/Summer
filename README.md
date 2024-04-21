@@ -1,3 +1,9 @@
+---
+title: "文档"
+lang: zh-cn
+---
+
+
 ## Summer
 优雅而强大的Dart Web框架。借鉴了Express.js等开源库，支持路由管理，中间件，静态文件托管，以及各种常用的功能  
 
@@ -115,7 +121,8 @@ void main(List<String> arguments) {
 }
 ```  
 
-调用`res.downloadFile('files/file.txt')`  
+调用`res.downloadFile('files/file.txt')`即可  
+
 
 
 
@@ -134,7 +141,7 @@ app.listen(httpPort: 4000);
 
 引入`summer`包后，需要调用`createApp`创建应用，然后可以调用`app.get(http方法)`，输入路径以及回调函数  
 
-回调函数中的`next`类似于`express`的`next`，只不过`summer`是调用`next.complete()`来继续执行函数的  
+回调函数中的`next`类似于`express`的`next`，只不过`summer`是调用`next.complete()`来继续执行函数  
 
 
 
@@ -162,6 +169,7 @@ void main(List<String> arguments) {
 
 ``` dart
 import 'dart:io';
+
 import 'package:summer/summer.dart';
 
 void main(List<String> arguments) {
@@ -189,4 +197,5 @@ void main(List<String> arguments) {
 app.use(path: '/', fns:[...]);
 ```  
 
-`app.use`用来注册中间件，传递一个`Handler`函数数组，目前仅支持`HttpHandler.path`为可选值，符合该路径才调用  
+`app.use`用来注册中间件，传递一个`Handler`函数数组  
+目前仅支持`HttpHandler.path`为可选值，符合该路径才调用  

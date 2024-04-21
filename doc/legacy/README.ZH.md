@@ -17,9 +17,9 @@ void main(List<String> arguments) {
 }
 ```  
 
-
 `app.get`定义一个get请求，`/test`为路径，后面的回调函数负责执行业务逻辑  
 `app.listen(httpPort: 4000)`，启动HTTP服务，并监听4000端口  
+
 
 
 ### 中间件
@@ -43,6 +43,8 @@ void main(List<String> arguments) {
 以`cors`中间件为例，`cors()`会返回函数  
 使用`app.use(fns: [cors(corsOptions)])`就可将中间件注册  
 
+
+
 ### 路由管理器
 
 ```dart
@@ -64,6 +66,7 @@ void main(List<String> arguments) {
 创建路由管理器，并使用`app.useHttpRouter`将路由管理器注册进应用，访问接口的路径为`/index/test`  
 
 
+
 ### 文件系统
 
 ``` dart
@@ -76,7 +79,8 @@ void main(List<String> arguments) {
 }
 ```  
 
-引入fileDB中间件，输入`http://localhost:4000`，即可访问`file`s文件夹  
+引入fileDB中间件，输入`http://localhost:4000`，即可访问`files`文件夹  
+
 
 
 ### 静态网站  
@@ -92,6 +96,7 @@ void main(List<String> arguments) {
 ```  
 
 引入`serveStatic`中间件，输入`http://localhost:4000`即可访问htmls文件夹下的静态网站  
+
 
 
 ### 文件下载
@@ -113,6 +118,8 @@ void main(List<String> arguments) {
 调用`res.downloadFile('files/file.txt')`  
 
 
+
+
 ## API请求
 
 ### HTTP  
@@ -128,6 +135,8 @@ app.listen(httpPort: 4000);
 引入`summer`包后，需要调用`createApp`创建应用，然后可以调用`app.get(http方法)`，输入路径以及回调函数  
 
 回调函数中的`next`类似于`express`的`next`，只不过`summer`是调用`next.complete()`来继续执行函数的  
+
+
 
 ### WebSocket
 
@@ -145,13 +154,14 @@ void main(List<String> arguments) {
   ]);
   app.listen(httpPort: 4000);
 }
-``` 
+```  
+
+
 
 ### TCP/UDP
 
 ``` dart
 import 'dart:io';
-
 import 'package:summer/summer.dart';
 
 void main(List<String> arguments) {

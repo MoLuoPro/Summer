@@ -1,9 +1,3 @@
----
-title: "文档"
-lang: zh-CN
----
-
-
 ## Summer
 优雅而强大的Dart Web框架。借鉴了Express.js等开源库，支持路由管理，中间件，静态文件托管，以及各种常用的功能  
 

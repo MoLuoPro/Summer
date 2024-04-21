@@ -50,5 +50,3 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(fetch(request).then(saveToCache).catch(serveFromCache));
 });
 
-
-

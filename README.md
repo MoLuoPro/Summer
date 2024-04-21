@@ -1,6 +1,6 @@
 ---
 title: "文档"
-lang: zh-cn
+lang: zh-CN
 ---
 
 

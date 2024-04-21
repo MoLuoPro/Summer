@@ -41,7 +41,7 @@ void main(List<String> arguments) {
 ```  
 
 以`cors`中间件为例，`cors()`会返回函数  
-使用`app.use(fns: [cors(corsOptions)])`就可将中间件注册
+使用`app.use(fns: [cors(corsOptions)])`就可将中间件注册  
 
 ### 路由管理器
 
@@ -76,7 +76,8 @@ void main(List<String> arguments) {
 }
 ```  
 
-引入fileDB中间件，输入`http://localhost:4000`，即可访问files文件夹  
+引入fileDB中间件，输入`http://localhost:4000`，即可访问`file`s文件夹  
+
 
 ### 静态网站  
 

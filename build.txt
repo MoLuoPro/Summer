@@ -1,3 +1,6 @@
+# 编译doc目录下的hugo项目
+hugo -s doc
+
 # 遍历 public 目录并将其中的文件的换行符从 CRLF 转换为 LF
 
 # 设置要处理的目录路径

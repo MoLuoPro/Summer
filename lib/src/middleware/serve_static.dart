@@ -5,7 +5,7 @@ import 'package:path/path.dart';
 
 import '../http/http.dart';
 
-/// 静态服务中间件
+/// 静态服务中间件,[path]根路径,访问时,url不需要加上该path
 serveStatic(String path) {
   var baseUri = Directory.current.uri.resolve(path);
   var baseDir = Directory.fromUri(baseUri);

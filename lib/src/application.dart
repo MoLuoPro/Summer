@@ -5,6 +5,7 @@ import 'package:summer/src/router/router.dart';
 
 import 'http/http.dart';
 
+/// 应用, 继承summer所有的功能
 class Application with Server, RequestHandler {
   // final Map<String, dynamic> _settings = {};
   WebSocketRouterInternal? _webSocketRouter;

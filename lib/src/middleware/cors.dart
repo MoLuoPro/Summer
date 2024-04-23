@@ -2,6 +2,7 @@ import 'dart:async';
 
 import '../http/http.dart';
 
+/// [options]配置
 HttpHandler cors([Map<String, dynamic>? options]) {
   dynamic origin = '*';
   List<String> methods = ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'];
@@ -26,6 +27,7 @@ HttpHandler cors([Map<String, dynamic>? options]) {
     preflightContinue = options['preflightContinue'] ?? preflightContinue;
     optionsSuccessStatus =
         options['optionsSuccessStatus'] ?? optionsSuccessStatus;
+    maxAge = options['maxAge'] ?? maxAge;
   }
 
   return (Request req, Response res, Completer<String?> next) async {

@@ -6,12 +6,15 @@ import 'package:summer/src/router/router.dart';
 import 'http/http.dart';
 
 class Application with Server, RequestHandler {
-  final Map<String, dynamic> _settings = {};
+  // final Map<String, dynamic> _settings = {};
   WebSocketRouterInternal? _webSocketRouter;
   HttpRouterInternal? _httpRouter;
   TCPRouterInternal? _tcpRouter;
   UDPRouterInternal? _udpRouter;
 
+  /// 启动并监听端口
+  /// [httpPort]监听http请求
+  /// [tcpPort]和[udpPort]分别监听tcp和udp
   @override
   Future<void> listen({int? httpPort, int? tcpPort, int? udpPort}) {
     if (httpPort != null) {
@@ -26,11 +29,12 @@ class Application with Server, RequestHandler {
     return super.listen(httpPort: httpPort, tcpPort: tcpPort, udpPort: udpPort);
   }
 
-  Application set(String setting, dynamic val) {
-    _settings[setting] = val;
-    return this;
-  }
+  // Application set(String setting, dynamic val) {
+  //   _settings[setting] = val;
+  //   return this;
+  // }
 
+  /// 注册中间件
   Application use({String path = '/', required List<HttpHandler> fns}) {
     use() async {
       await _lazyRouter();
@@ -41,6 +45,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
+  /// 注册[HttpRouter]
   Application useHttpRouter({String path = '/', required HttpRouter router}) {
     useRouter() async {
       await _lazyRouter();
@@ -51,6 +56,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
+  /// 注册[WebSocketRouter]
   Application useWebSocketRouter(
       {String path = '/', required WebSocketRouter router}) {
     useRouter() async {
@@ -62,6 +68,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
+  /// 注册[TCPRouter]
   void useTCPRouter(TCPRouter router) {
     useRouter() async {
       await _lazyRouter();
@@ -71,6 +78,7 @@ class Application with Server, RequestHandler {
     useRouter();
   }
 
+  /// 注册[UDPRouter]
   void useUDPRouter(UDPRouter router) {
     useRouter() async {
       await _lazyRouter();
@@ -80,6 +88,7 @@ class Application with Server, RequestHandler {
     useRouter();
   }
 
+  /// 参数处理器,在处理请求之前调用,可输入多个参数名称
   Application params(List<String> names, Function fn) {
     params() async {
       await _lazyRouter();
@@ -92,6 +101,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
+  /// 参数处理器,在处理请求之前调用
   Application param(String name, Function fn) {
     param() async {
       await _lazyRouter();

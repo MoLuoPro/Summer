@@ -12,9 +12,7 @@ class Application with Server, RequestHandler {
   TCPRouterInternal? _tcpRouter;
   UDPRouterInternal? _udpRouter;
 
-  /// 启动并监听端口
-  /// [httpPort]监听http请求
-  /// [tcpPort]和[udpPort]分别监听tcp和udp
+  /// 启动并监听端口,[httpPort]监听http请求,[tcpPort]和[udpPort]分别监听tcp和udp
   @override
   Future<void> listen({int? httpPort, int? tcpPort, int? udpPort}) {
     if (httpPort != null) {
@@ -34,7 +32,7 @@ class Application with Server, RequestHandler {
   //   return this;
   // }
 
-  /// 注册中间件
+  /// 注册中间件, [path]注册的请求路径, [fns]业务逻辑
   Application use({String path = '/', required List<HttpHandler> fns}) {
     use() async {
       await _lazyRouter();
@@ -45,7 +43,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
-  /// 注册[HttpRouter]
+  /// 注册[HttpRouter], [path]注册的请求路径, [fns]业务逻辑
   Application useHttpRouter({String path = '/', required HttpRouter router}) {
     useRouter() async {
       await _lazyRouter();
@@ -88,7 +86,9 @@ class Application with Server, RequestHandler {
     useRouter();
   }
 
-  /// 参数处理器,在处理请求之前调用,可输入多个参数名称
+  /// 参数处理器,在处理请求之前调用
+  /// [names]要处理的参数名称
+  /// [fn]业务逻辑
   Application params(List<String> names, Function fn) {
     params() async {
       await _lazyRouter();
@@ -102,6 +102,8 @@ class Application with Server, RequestHandler {
   }
 
   /// 参数处理器,在处理请求之前调用
+  /// [names]要处理的参数名称
+  /// [fn]业务逻辑
   Application param(String name, Function fn) {
     param() async {
       await _lazyRouter();
@@ -169,7 +171,7 @@ class Application with Server, RequestHandler {
     }
   }
 
-  /// [get]请求
+  /// [get]请求,[path]请求路径,[callbacks]业务逻辑
   @override
   Application get(String path, List<HttpHandler> callbacks) {
     void get() async {
@@ -185,7 +187,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
-  /// [post]请求
+  /// [post]请求,[path]请求路径,[callbacks]业务逻辑
   @override
   Application post(String path, List<HttpHandler> callbacks) {
     void post() async {
@@ -201,7 +203,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
-  /// [delete]请求
+  /// [delete]请求,[path]请求路径,[callbacks]业务逻辑
   @override
   Application delete(String path, List<HttpHandler> callbacks) {
     void delete() async {
@@ -217,7 +219,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
-  /// [head]请求
+  /// [head]请求,[path]请求路径,[callbacks]业务逻辑
   @override
   Application head(String path, List<HttpHandler> callbacks) {
     void head() async {
@@ -233,7 +235,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
-  /// [options]请求
+  /// [options]请求,[path]请求路径,[callbacks]业务逻辑
   @override
   Application options(String path, List<HttpHandler> callbacks) {
     void options() async {
@@ -249,7 +251,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
-  /// [patch]请求
+  /// [patch]请求,[path]请求路径,[callbacks]业务逻辑
   @override
   Application patch(String path, List<HttpHandler> callbacks) {
     void patch() async {
@@ -265,7 +267,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
-  /// [put]请求
+  /// [put]请求,[path]请求路径,[callbacks]业务逻辑
   @override
   Application put(String path, List<HttpHandler> callbacks) {
     void put() async {
@@ -281,7 +283,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
-  /// 所有请求
+  /// 所有请求,[path]请求路径,[callbacks]业务逻辑
   Application all(String path, List<HttpHandler> callbacks) {
     void all() async {
       await _lazyRouter();
@@ -298,7 +300,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
-  /// webSocket
+  /// webSocket,[path]请求路径,[callbacks]业务逻辑
   @override
   WebSocketMethod ws(String path, List<WebSocketHandler> callbacks) {
     void ws() async {
@@ -314,7 +316,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
-  /// tcp
+  /// tcp,[callbacks]业务逻辑
   @override
   void tcp(TCPSocketHandler callback) {
     void tcp() async {
@@ -327,7 +329,7 @@ class Application with Server, RequestHandler {
     tcp();
   }
 
-  /// udp
+  /// udp,[callbacks]业务逻辑
   @override
   void udp(UDPSocketHandler callback) {
     udp() async {

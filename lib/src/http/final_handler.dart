@@ -1,4 +1,4 @@
-part of http;
+part of 'http.dart';
 
 Future<void> httpFinalHandler(Request req, Response res, String? err) async {
   var code = res._inner.statusCode;

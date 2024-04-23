@@ -1,4 +1,4 @@
-part of router;
+part of 'router.dart';
 
 abstract class Route {
   final List _stack = [];
@@ -44,7 +44,6 @@ abstract class Route {
 }
 
 class HttpRoute extends Route {
-  
   /// 遍历[_stack],将参数分发给匹配的[Layer]
   @override
   Future<void> dispatch(List params, Completer<String?> done) async {

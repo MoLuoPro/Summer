@@ -1,4 +1,4 @@
-part of http;
+part of 'http.dart';
 
 typedef HttpHandler = FutureOr<void> Function(
     Request req, Response res, Completer<String?> next);

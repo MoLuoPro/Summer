@@ -1,4 +1,4 @@
-part of http;
+part of 'http.dart';
 
 mixin Server {
   HttpServer? _server;

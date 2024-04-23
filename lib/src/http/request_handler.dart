@@ -1,4 +1,4 @@
-part of http;
+part of 'http.dart';
 
 /// 监听[Server]的请求
 mixin RequestHandler on Server

@@ -1,4 +1,4 @@
-part of http;
+part of '../http.dart';
 
 class ErrorWithMessage extends Error {
   final String _message;
@@ -11,9 +11,9 @@ class ErrorWithMessage extends Error {
 }
 
 class TCPError extends ErrorWithMessage {
-  TCPError(String message) : super(message);
+  TCPError(super.message);
 }
 
 class UDPError extends ErrorWithMessage {
-  UDPError(String message) : super(message);
+  UDPError(super.message);
 }

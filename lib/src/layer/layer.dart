@@ -70,7 +70,7 @@ abstract class Layer {
 }
 
 class RouteLayer extends HandleLayer {
-  RouteLayer(String path, Function fn) : super(path, fn);
+  RouteLayer(super.path, super.fn);
 
   @override
   Future<void> _handleError(List params, [Completer<String?>? next]) async {
@@ -94,23 +94,23 @@ class RouteLayer extends HandleLayer {
 }
 
 class HttpRouteLayer extends RouteLayer {
-  HttpRouteLayer(String path, Function fn) : super(path, fn);
+  HttpRouteLayer(super.path, super.fn);
 }
 
 class WebSocketRouteLayer extends RouteLayer {
-  WebSocketRouteLayer(String path, Function fn) : super(path, fn);
+  WebSocketRouteLayer(super.path, super.fn);
 }
 
 class TCPRouteLayer extends RouteLayer {
-  TCPRouteLayer(String path, Function fn) : super(path, fn);
+  TCPRouteLayer(super.path, super.fn);
 }
 
 class UDPRouteLayer extends RouteLayer {
-  UDPRouteLayer(String path, Function fn) : super(path, fn);
+  UDPRouteLayer(super.path, super.fn);
 }
 
 abstract class HandleLayer extends Layer {
-  HandleLayer(String path, Function fn) : super(path, fn);
+  HandleLayer(super.path, super.fn);
 
   bool _requestCondition();
   bool _errorCondition();
@@ -169,7 +169,7 @@ abstract class HandleLayer extends Layer {
 }
 
 class HttpHandleLayer extends HandleLayer {
-  HttpHandleLayer(String path, Function fn) : super(path, fn);
+  HttpHandleLayer(super.path, super.fn);
 
   @override
   Future<void> _handleError(List params, [Completer<String?>? next]) async {
@@ -236,7 +236,7 @@ class HttpHandleLayer extends HandleLayer {
 }
 
 class WebSocketHandleLayer extends HandleLayer {
-  WebSocketHandleLayer(String path, Function fn) : super(path, fn);
+  WebSocketHandleLayer(super.path, super.fn);
 
   @override
   bool _requestCondition() {
@@ -278,7 +278,7 @@ class UDPHandleLayer extends HandleLayer {
 }
 
 class HttpMiddlewareLayer extends HandleLayer {
-  HttpMiddlewareLayer(String path, Function fn) : super(path, fn);
+  HttpMiddlewareLayer(super.path, super.fn);
 
   @override
   bool _errorCondition() {
@@ -292,13 +292,13 @@ class HttpMiddlewareLayer extends HandleLayer {
 }
 
 abstract class RouterLayer extends Layer {
-  RouterLayer(String path, Function fn) : super(path, fn);
+  RouterLayer(super.path, super.fn);
 
   Future<void> handle(List params, Function? done);
 }
 
 class WebSocketRouterLayer extends RouterLayer {
-  WebSocketRouterLayer(String path, Function fn) : super(path, fn);
+  WebSocketRouterLayer(super.path, super.fn);
 
   @override
   Future<void> handle(List params, Function? done) async {
@@ -309,7 +309,7 @@ class WebSocketRouterLayer extends RouterLayer {
 }
 
 class HttpRouterLayer extends RouterLayer {
-  HttpRouterLayer(String path, Function fn) : super(path, fn);
+  HttpRouterLayer(super.path, super.fn);
 
   @override
   Future<void> handle(List params, Function? done) async {
@@ -320,7 +320,7 @@ class HttpRouterLayer extends RouterLayer {
 }
 
 class TCPRouterLayer extends RouterLayer {
-  TCPRouterLayer(String path, Function fn) : super(path, fn);
+  TCPRouterLayer(super.path, super.fn);
 
   @override
   Future<void> handle(List params, Function? done) async {
@@ -330,7 +330,7 @@ class TCPRouterLayer extends RouterLayer {
 }
 
 class UDPRouterLayer extends RouterLayer {
-  UDPRouterLayer(String path, Function fn) : super(path, fn);
+  UDPRouterLayer(super.path, super.fn);
 
   @override
   Future<void> handle(List params, Function? done) async {

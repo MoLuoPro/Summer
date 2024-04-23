@@ -65,6 +65,7 @@ execute<T>(Runnable<T> runnable) {
   return Function.apply(handle, runnable._args);
 }
 
+/// Http请求
 abstract class HttpMethod {
   static const String httpAll = 'ALL';
   static const String httpGet = 'GET';
@@ -93,16 +94,19 @@ abstract class HttpMethod {
   HttpMethod options(String uri, List<HttpHandler> callbacks);
 }
 
+/// WebSocket
 abstract class WebSocketMethod {
   static const String name = 'WEB_SOCKET';
   WebSocketMethod ws(String uri, List<WebSocketHandler> callbacks);
 }
 
+/// TCP
 abstract class TCPMethod {
   static const String name = 'TCP';
   void tcp(TCPSocketHandler callback);
 }
 
+/// UDP
 abstract class UDPMethod {
   static const String name = 'UDP';
   void udp(UDPSocketHandler callback);

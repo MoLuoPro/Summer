@@ -13,13 +13,17 @@ fileDB(String path) {
   return (Request req, Response res, Completer<String?>? next) async {
     res as ResponseInternal;
     if (req.method == HttpMethod.httpGet) {
-      var uri = baseDir.uri.resolve(path + req.uri.path);
-      var file = File.fromUri(uri);
-      var dir = Directory.fromUri(uri);
-      if (await file.exists()) {
-        await _getFile(req, res, file);
-      } else if (await dir.exists()) {
-        await _getDirectory(req, res, dir, baseDir);
+      if (req.uri.path.startsWith('/$path')) {
+        var uri = baseDir.uri.resolve(req.uri.path.substring(1));
+        var file = File.fromUri(uri);
+        var dir = Directory.fromUri(uri);
+        if (await file.exists()) {
+          await _getFile(req, res, file);
+        } else if (await dir.exists()) {
+          await _getDirectory(req, res, dir, baseDir);
+        } else {
+          res.inner.statusCode = 404;
+        }
       } else {
         res.inner.statusCode = 404;
       }

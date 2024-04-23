@@ -159,6 +159,7 @@ class Application with Server, RequestHandler {
     }
   }
 
+  /// [get]请求
   @override
   Application get(String path, List<HttpHandler> callbacks) {
     void get() async {
@@ -174,6 +175,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
+  /// [post]请求
   @override
   Application post(String path, List<HttpHandler> callbacks) {
     void post() async {
@@ -189,6 +191,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
+  /// [delete]请求
   @override
   Application delete(String path, List<HttpHandler> callbacks) {
     void delete() async {
@@ -204,6 +207,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
+  /// [head]请求
   @override
   Application head(String path, List<HttpHandler> callbacks) {
     void head() async {
@@ -219,6 +223,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
+  /// [options]请求
   @override
   Application options(String path, List<HttpHandler> callbacks) {
     void options() async {
@@ -234,6 +239,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
+  /// [patch]请求
   @override
   Application patch(String path, List<HttpHandler> callbacks) {
     void patch() async {
@@ -249,6 +255,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
+  /// [put]请求
   @override
   Application put(String path, List<HttpHandler> callbacks) {
     void put() async {
@@ -264,6 +271,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
+  /// 所有请求
   Application all(String path, List<HttpHandler> callbacks) {
     void all() async {
       await _lazyRouter();
@@ -280,6 +288,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
+  /// webSocket
   @override
   WebSocketMethod ws(String path, List<WebSocketHandler> callbacks) {
     void ws() async {
@@ -295,6 +304,7 @@ class Application with Server, RequestHandler {
     return this;
   }
 
+  /// tcp
   @override
   void tcp(TCPSocketHandler callback) {
     void tcp() async {
@@ -307,6 +317,7 @@ class Application with Server, RequestHandler {
     tcp();
   }
 
+  /// udp
   @override
   void udp(UDPSocketHandler callback) {
     udp() async {
@@ -320,6 +331,7 @@ class Application with Server, RequestHandler {
   }
 }
 
+/// 创建应用
 Application createApp() {
   return Application();
 }

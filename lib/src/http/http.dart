@@ -36,6 +36,7 @@ class Request {
   List<Cookie> get cookies => _inner.cookies;
   Map get data => _data;
 
+  /// 解析请求体,可解析表达以及json
   Future<dynamic> decodingBody() async {
     if (_body != null) {
       return _body;
@@ -78,10 +79,11 @@ class Request {
       .fold<List<int>>([], (prev, elements) => prev..addAll(elements));
 }
 
+/// 内部使用的[Request]
 class RequestInternal extends Request {
   HttpRequest get inner => _inner;
   WebSocket? ws;
-  RequestInternal(HttpRequest inner) : super(inner);
+  RequestInternal(super.inner);
   String get baseUrl => _baseUrl;
   set baseUrl(value) => _baseUrl = value;
 }
@@ -103,26 +105,31 @@ class Response {
           {int status = HttpStatus.movedTemporarily}) =>
       _inner.redirect(location, status: status);
 
+  /// 对[Response]写入json
   Response json(Map<String, dynamic> data) {
     _inner.write(jsonEncode(data));
     return this;
   }
 
+  /// 对[Response]写入json数组
   Response jsonList(List<Map<String, dynamic>> data) {
     _inner.write(jsonEncode(data));
     return this;
   }
 
+  /// 写入任意对象
   Response send(dynamic data) {
     _inner.write(data);
     return this;
   }
 
+  /// 写入任意数组
   Response sendAll<T>(Iterable<T> data, [String separator = ""]) {
     _inner.writeAll(data, separator);
     return this;
   }
 
+  /// 调用该方法后,前端执行下载
   Future<void> downloadFile(String path) async {
     Uri uri = Directory.current.uri.resolve(path);
     var file = File.fromUri(uri);
@@ -138,11 +145,13 @@ class Response {
     }
   }
 
+  /// 关闭响应
   Future<dynamic> close() => _inner.close();
 }
 
+/// 内部使用的[Response]
 class ResponseInternal extends Response {
-  ResponseInternal(HttpResponse inner) : super(inner);
+  ResponseInternal(super.inner);
 
   HttpResponse get inner => _inner;
 }

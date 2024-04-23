@@ -27,16 +27,19 @@ mixin Server {
     });
   }
 
+  /// 检查[HttpServer]是否连接
   Future<bool> isHttpServerConnected() async {
     await _listened.future;
     return _server != null;
   }
 
+  /// 检查[ServerSocket]是否连接
   Future<bool> isTCPServerConnected() async {
     await _listened.future;
     return _tcp != null;
   }
 
+  /// 检查[RawDatagramSocket]是否连接
   Future<bool> isUDPServerConnected() async {
     await _listened.future;
     return _udp != null;

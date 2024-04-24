@@ -1,3 +1,7 @@
+## 0.6.4
+
+- bug fix
+
 ## 0.6.3
 
 - first complete version

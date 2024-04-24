@@ -1,6 +1,6 @@
 name: summer
 description: Powerful Server Framework behind Spring
-version: 0.6.3
+version: 0.6.4
 repository: https://github.com/moluopro/summer
 
 environment:

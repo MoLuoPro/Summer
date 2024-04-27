@@ -118,8 +118,12 @@ class Response {
   }
 
   /// 写入任意对象
-  Response send(dynamic data) {
-    _inner.write(data);
+  Response send<T>(T data, [String separator = ""]) {
+    if (data is Iterable) {
+      _inner.writeAll(data, separator);
+    } else {
+      _inner.write(data);
+    }
     return this;
   }
 

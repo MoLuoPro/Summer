@@ -20,14 +20,29 @@ serveStatic(String path) {
         res.inner.statusCode = 404;
       }
     }
+    next.complete();
   };
 }
 
 Future<void> _getFile(Request req, Response res, File file) async {
+  res as ResponseInternal;
   var fileName = basename(file.path);
+  var extensionName = extension(file.path);
   var mimeType = mime(fileName);
   mimeType = mimeType ?? 'application/octet-stream';
-  var content = await file.readAsString();
+  var contentType = ContentType.parse(mimeType);
+  dynamic content;
+  if (extensionName == '.pck' ||
+      extensionName == '.dll' ||
+      extensionName == '.wasm' ||
+      contentType.primaryType == 'image' ||
+      contentType.primaryType == 'audio' ||
+      contentType.primaryType == 'video' ||
+      mimeType == 'application/octet-stream') {
+    content = await file.openRead().pipe(res.inner);
+  } else {
+    content = await file.readAsString();
+  }
   res.headers.set('Content-Type', mimeType);
   res.statusCode = 200;
   res.send(content);
